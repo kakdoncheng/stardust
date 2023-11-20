@@ -1,10 +1,13 @@
 # Stardust
   
-### A 2D arcade shooter where enemies from classic arcade titles combine forces in an attempt to destroy you.
+### A 2D arcade shooter where enemies from historic arcade titles combine forces in an attempt to destroy you! Features clones of classics including Missile Command, Space Invaders, Gradius, and Sinistar, all haphazardly thrown into an endless asteroid field to harass the player.
+   
   
+You can download the latest build [here](https://github.com/kakdoncheng/stardust/releases/latest).
+   
   
 ### Controls
-  
+   
   
 Aim - Mouse  
 Move/Strafe - W, A, S, D  
@@ -19,7 +22,7 @@ Give Power - F
 Disable Hitbox - G  
 Enable Hitbox - H  
 Jump to Stage - <0-9>, LShift+<0-9>  
-  
+   
   
 ### Bulding from source
 
