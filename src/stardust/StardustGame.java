@@ -47,7 +47,7 @@ import engine.sfx.Audio;
 public class StardustGame extends Game{
 	
 	public static final String credits="Game Design, Programming, & Art: Linh-Han Van 01.01.2022";
-	public static final String version="v0.1.0-alpha+20221119";
+	public static final String version="v0.1.0+20221119";
 	
 	public StardustGame() {
 		super(0, 0, "Stardust");
