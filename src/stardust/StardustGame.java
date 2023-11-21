@@ -47,7 +47,7 @@ import engine.sfx.Audio;
 public class StardustGame extends Game{
 	
 	public static final String credits="Game Design, Programming, & Art: Linh-Han Van 01.01.2022";
-	public static final String version="v0.1.0+20221119";
+	public static final String version="v0.1.0+20221120";
 	
 	public StardustGame() {
 		super(0, 0, "Stardust");
@@ -102,6 +102,8 @@ public class StardustGame extends Game{
 		//GameFlags.setFlag("enable-bloom", 1);
 		GameFlags.setFlag("bloom-intensity", 3);
 		//GameFlags.setFlag("debug-showhitbox", 1);
+		
+		// deprecated, will always load audio from disk
 		GameFlags.setFlag("debug-altwavload", 1);
 		
 		// sfx
@@ -366,7 +368,7 @@ public class StardustGame extends Game{
 				bulletTime=1;
 			}
 		}
-		Audio.setPitch(bulletTime);
+		Audio.setSFXPitch(bulletTime);
 		this.setRunSpeed(bulletTime);
 		
 		if(GameFlags.is("debug")){

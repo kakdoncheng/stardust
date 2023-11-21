@@ -8,16 +8,6 @@ import org.lwjgl.openal.AL10;
 
 public class AudioSoundEffect {
 	
-	private int repeat;
-	public boolean repeat(){
-		if(repeat > 0){
-			repeat--;
-			AL10.alSourcePlay(source.get(0));
-			return true;
-		}
-		return false;
-	}
-	
 	private AudioData data;
 	private IntBuffer source;
 	private FloatBuffer sourcePos;
@@ -42,16 +32,11 @@ public class AudioSoundEffect {
 	}
 	
 	public AudioSoundEffect(AudioData data, float volume){
-		this(data, volume, false, 0);
+		this(data, volume, false);
 	}
 	
-	public AudioSoundEffect(AudioData data, float volume, int repeat){
-		this(data, volume, false, repeat);
-	}
-	
-	public AudioSoundEffect(AudioData data, float volume, boolean looping, int repeat){
+	public AudioSoundEffect(AudioData data, float volume, boolean looping){
 		this.data=data;
-		this.repeat=repeat;
 		source=BufferUtils.createIntBuffer(1);
 		sourcePos=BufferUtils.createFloatBuffer(3);
 		sourceVel=BufferUtils.createFloatBuffer(3);
