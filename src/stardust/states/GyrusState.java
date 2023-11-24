@@ -18,6 +18,7 @@ import engine.GameFlags;
 import engine.State;
 import engine.Vector;
 import engine.gfx.Camera;
+import engine.sfx.Audio;
 
 public class GyrusState extends StardustState{
 
@@ -33,6 +34,7 @@ public class GyrusState extends StardustState{
 	private boolean tagged;
 	private int kills;
 	private char[] dis;
+	private boolean bgmClear;
 	
 	// entities
 	private RadarScan rc;
@@ -51,6 +53,7 @@ public class GyrusState extends StardustState{
 		tt=0;
 		kills=0;
 		tagged=false;
+		bgmClear=false;
 		
 		dis=String.format("0.%05d", kills).toCharArray();
 		
@@ -71,8 +74,21 @@ public class GyrusState extends StardustState{
 		game.hideStardust();
 		if(bgT<0.5){
 			bgT+=dt;
+			if(!bgmClear) {
+				// dynamically load music here?
+				Audio.clearBackgroundMusicQueue();
+				Audio.clearBackgroundMusic();
+				bgmClear=true;
+			}
+			
 			updateBackgroundText();
 			return;
+		}
+		if(bgmClear) {
+			// if statement below is deprecated by
+			//this.playRandomBGMSequence();
+			Audio.queueBackgroundMusic("retro-synthwave-short-version-176294/loop");
+			bgmClear=false;
 		}
 		
 		tt+=4*Math.PI*dt;
@@ -136,6 +152,9 @@ public class GyrusState extends StardustState{
 				State.setCurrentState(0);
 				game.$currentState().reset();
 				game.$currentState().addEntity(new ElectromagneticPulse(game,lx,ly));
+			} else {
+				Audio.clearBackgroundMusicQueue();
+				Audio.clearBackgroundMusic();
 			}
 			game.flashRedBorder();
 			delay-=dt;

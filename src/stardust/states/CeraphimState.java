@@ -10,6 +10,7 @@ import engine.GameFlags;
 import engine.State;
 import engine.Vector;
 import engine.gfx.Camera;
+import engine.sfx.Audio;
 
 public class CeraphimState extends StardustState{
 	
@@ -22,6 +23,7 @@ public class CeraphimState extends StardustState{
 	private char[] dis;
 	private double disT, timer, bgT;
 	private int disi;
+	private boolean bgmClear;
 
 	private Ceraphim boss;
 	private StardustEntity player;
@@ -36,6 +38,7 @@ public class CeraphimState extends StardustState{
 		particles.clear();
 		particles.setRenderDistance(StardustGame.BOUNDS);
 		game.$camera().hardCenterOnPoint(0, 0);
+		bgmClear=false;
 		
 		dis="*.*****                                 ".toCharArray();
 		bgT=0;
@@ -55,9 +58,33 @@ public class CeraphimState extends StardustState{
 	public void update(double dt) {
 		if(bgT<0.5){
 			bgT+=dt;
+			if(!bgmClear) {
+				// dynamically load music here?
+				Audio.clearBackgroundMusicQueue();
+				Audio.clearBackgroundMusic();
+				bgmClear=true;
+			}
+			
 			updateBackgroundText();
 			game.hideStardust();
 			return;
+		}
+		if(bgmClear) {
+			// if statement below is deprecated by
+			//this.playRandomBGMSequence();
+			double bgmi=game.$prng().$double(0, 1);
+			if(bgmi<0.2) {
+				Audio.queueBackgroundMusic("night-city-knight-127028/2-loop-2");
+			}else if(bgmi<0.4) {
+				Audio.queueBackgroundMusic("night-city-knight-127028/4-loop-2");
+			}else if(bgmi<0.6) {
+				Audio.queueBackgroundMusic("night-city-knight-127028/3-intro");
+			}else if(bgmi<0.8) {
+				Audio.queueBackgroundMusic("night-city-knight-127028/4-loop-1");
+			}else {
+				Audio.queueBackgroundMusic("night-city-knight-127028/4-loop-3");
+			}
+			bgmClear=false;
 		}
 		
 		// check end condition

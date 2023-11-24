@@ -17,6 +17,7 @@ import engine.GameFlags;
 import engine.State;
 import engine.Vector;
 import engine.gfx.Camera;
+import engine.sfx.Audio;
 
 public class TerraState extends StardustState{
 
@@ -35,6 +36,7 @@ public class TerraState extends StardustState{
 	private double bgT;
 	private double delay;
 	private boolean tagged;
+	private boolean bgmClear;
 
 	public void reset() {
 		GameFlags.setFlag("warp", 1);
@@ -50,6 +52,7 @@ public class TerraState extends StardustState{
 		bgT=0;
 		delay=1;
 		tagged=false;
+		bgmClear=false;
 		
 		hostiles=new ArrayList<StardustEntity>();
 		
@@ -78,10 +81,31 @@ public class TerraState extends StardustState{
 	public void update(double dt) {
 		if(bgT<0.5){
 			bgT+=dt;
+			if(!bgmClear) {
+				// dynamically load music here?
+				Audio.clearBackgroundMusicQueue();
+				Audio.clearBackgroundMusic();
+				bgmClear=true;
+			}
+			
 			updateBackgroundText();
 			game.hideStardust();
 			return;
 		}
+		if(bgmClear) {
+			// if statement below is deprecated by
+			//this.playRandomBGMSequence();
+			double bgmi=game.$prng().$double(0, 1);
+			if(bgmi<0.333) {
+				Audio.queueBackgroundMusic("80s-synth-wave-110473/loop-1");
+			}else if(bgmi<0.666) {
+				Audio.queueBackgroundMusic("80s-synth-wave-110473/loop-2");
+			}else{
+				Audio.queueBackgroundMusic("80s-synth-wave-110473/loop-3");
+			}
+			bgmClear=false;
+		}
+		
 		mt-=dt;
 		if(mt<=0 && wavet>0){
 			spawnMine(360);
@@ -137,6 +161,9 @@ public class TerraState extends StardustState{
 				State.setCurrentState(0);
 				game.$currentState().reset();
 				game.$currentState().addEntity(new ElectromagneticPulse(game,lx,ly));
+			} else {
+				Audio.clearBackgroundMusicQueue();
+				Audio.clearBackgroundMusic();
 			}
 			game.flashRedBorder();
 			delay-=dt;

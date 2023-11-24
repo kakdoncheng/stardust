@@ -12,6 +12,7 @@ import stardust.gfx.CharGraphics;
 import engine.GameFlags;
 import engine.State;
 import engine.gfx.Camera;
+import engine.sfx.Audio;
 
 public class SpaceInvadersState extends StardustState{
 
@@ -33,6 +34,8 @@ public class SpaceInvadersState extends StardustState{
 	private StardustEntity player;
 	
 	public void reset() {
+		Audio.clearBackgroundMusicQueue();
+		Audio.clearBackgroundMusic();
 		GameFlags.setFlag("warp", 1);
 		clearBackgroundText();
 		targetable.clear();
@@ -98,6 +101,9 @@ public class SpaceInvadersState extends StardustState{
 				// win
 				// set game flags player xy & success
 				// set stage back to endless
+				Audio.queueBackgroundMusic("night-city-knight-127028/1-intro");
+				Audio.queueBackgroundMusic("night-city-knight-127028/2-intro");
+				Audio.queueBackgroundMusic("night-city-knight-127028/3-intro");
 				GameFlags.markFlag("invaders");
 				GameFlags.setFlag("success", 1);
 				GameFlags.setFlag("player-x", (int)player.$x());

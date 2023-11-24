@@ -130,6 +130,10 @@ public class StardustGame extends Game{
 		Audio.loadWavData("blip", 1, 1);
 		Audio.loadWavData("pongf4", 1, 1);
 		Audio.loadWavData("pongf5", 1, 1);
+		Audio.loadWavData("invaders-a", 1, 16);
+		Audio.loadWavData("invaders-b", 1, 16);
+		Audio.loadWavData("invaders-c", 1, 16);
+		Audio.loadWavData("invaders-d", 1, 16);
 		
 		// bgm
 		// might need to dynamically load?
@@ -150,11 +154,21 @@ public class StardustGame extends Game{
 		Audio.loadWavData("night-city-knight-127028/4-loop-1", 1, 1);
 		Audio.loadWavData("night-city-knight-127028/4-loop-2", 1, 1);
 		Audio.loadWavData("night-city-knight-127028/4-loop-3", 1, 1);
+		Audio.loadWavData("80s-synth-wave-110473/loop-1", 1, 1);
+		Audio.loadWavData("80s-synth-wave-110473/loop-2", 1, 1);
+		Audio.loadWavData("80s-synth-wave-110473/loop-3", 1, 1);
+		Audio.loadWavData("80s-synth-wave-110473/loop-lo-a", 1, 1);
+		Audio.loadWavData("80s-synth-wave-110473/loop-lo-b", 1, 1);
+		Audio.loadWavData("80s-synth-wave-110473/loop-lo", 1, 1);
+		Audio.loadWavData("arcade-171561/intro-1", 1, 1);
+		Audio.loadWavData("arcade-171561/intro-2", 1, 1);
+		Audio.loadWavData("arcade-171561/loop", 1, 1);
+		Audio.loadWavData("retro-synthwave-short-version-176294/loop", 1, 1);
 		
 		active=true;
-		//setResolution(1920, 1080);
-		setResolution(1366, 768);
-		//setFullscreen(true);
+		setResolution(1920, 1080);
+		//setResolution(1366, 768);
+		setFullscreen(true);
 		setFixedStep(true);
 		//setFPSLimit(30);
 		createDisplay();

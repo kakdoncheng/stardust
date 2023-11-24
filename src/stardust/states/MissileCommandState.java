@@ -25,6 +25,7 @@ import engine.State;
 import engine.Vector;
 import engine.gfx.Camera;
 import engine.input.MouseHandler;
+import engine.sfx.Audio;
 
 public class MissileCommandState extends StardustState{
 
@@ -36,6 +37,7 @@ public class MissileCommandState extends StardustState{
 	// internal flags/var
 	private boolean click;
 	private boolean tagged;
+	private boolean bgmClear;
 	private int warheads;
 	private double delay;
 	private double delayw;
@@ -59,6 +61,7 @@ public class MissileCommandState extends StardustState{
 		delay=1;
 		
 		click=true;
+		bgmClear=false;
 		tagged=false;
 		warheads=40;
 		delayw=0;
@@ -95,9 +98,26 @@ public class MissileCommandState extends StardustState{
 	public void update(double dt) {
 		if(bgT<0.5){
 			bgT+=dt;
+			if(!bgmClear) {
+				// dynamically load music here?
+				Audio.clearBackgroundMusicQueue();
+				Audio.clearBackgroundMusic();
+				bgmClear=true;
+			}
+			
 			updateBackgroundText();
 			game.hideStardust();
 			return;
+		}
+		if(bgmClear) {
+			double rnd=game.$prng().$double(0, 1);
+			if(rnd<0.5) {
+				Audio.queueBackgroundMusic("arcade-171561/intro-1");
+			} else {
+				Audio.queueBackgroundMusic("arcade-171561/intro-2");
+			}
+			Audio.queueBackgroundMusic("arcade-171561/loop");
+			bgmClear=false;
 		}
 		
 		if(warheads<1 && !tagged && !Warhead.isFF()){
@@ -235,6 +255,8 @@ public class MissileCommandState extends StardustState{
 				game.$currentState().reset();
 				game.$currentState().addEntity(new ElectromagneticPulse(game,lx,ly));
 			}else{
+				Audio.clearBackgroundMusicQueue();
+				Audio.clearBackgroundMusic();
 				if(delay>0.999){
 					game.$currentState().addEntity(new ElectromagneticPulse(game,lx2,ly2));
 				}

@@ -51,7 +51,7 @@ public class AnnihilatingMissile extends MissileProjectile{
 	};
 	private double tscale=2;
 	public void render(Camera c) {
-		//render
+		// render
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glPushMatrix();
 		GL11.glTranslatef(c.$cx(x), c.$cy(y), 0);
@@ -68,6 +68,30 @@ public class AnnihilatingMissile extends MissileProjectile{
 		
 		// render target crosshair
 		if(showtxy){
+			int a=0, b=6;
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
+			GL11.glPushMatrix();
+			GL11.glTranslatef(c.$cx(tx), c.$cy(ty), 0);
+			GL11.glBegin(GL11.GL_LINES);
+			GL11.glColor4d(1,0,0,1);
+			
+			GL11.glVertex2d(-a, -a);
+			GL11.glVertex2d(-b, -b);
+		
+			GL11.glVertex2d(+a, +a);
+			GL11.glVertex2d(+b, +b);
+		
+			GL11.glVertex2d(-a, +a);
+			GL11.glVertex2d(-b, +b);
+		
+			GL11.glVertex2d(+a, -a);
+			GL11.glVertex2d(+b, -b);
+			GL11.glEnd();
+			GL11.glPopMatrix();
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
+
+			// deprecated
+			/*
 			GL11.glDisable(GL11.GL_TEXTURE_2D);
 			GL11.glPushMatrix();
 			GL11.glTranslatef(c.$cx(tx), c.$cy(ty), 0);
@@ -80,8 +104,9 @@ public class AnnihilatingMissile extends MissileProjectile{
 			GL11.glEnd();
 			GL11.glPopMatrix();
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
+			//*/
 		}
-		//*/
+
 	}
 	
 	protected void onImpactWith(StardustEntity e) {

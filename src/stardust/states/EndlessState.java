@@ -109,9 +109,12 @@ public class EndlessState extends StardustState{
 		
 		// bgm
 		if(game.$stage()<1) {
+			Audio.clearBackgroundMusicQueue();
 			Audio.queueBackgroundMusic("lifelike-126735/loop-1");
 			Audio.queueBackgroundMusic("lifelike-126735/loop-1");
 			Audio.queueBackgroundMusic("lifelike-126735/loop-2");
+		}else if(game.$stage()<5) {
+			// do nothing
 		}else if(game.$stage()<9) {
 			Audio.clearBackgroundMusicQueue();
 			Audio.clearBackgroundMusic();

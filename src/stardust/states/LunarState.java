@@ -67,6 +67,7 @@ public class LunarState extends StardustState{
 		if(bgT<0.5){
 			bgT+=dt;
 			if(!bgmClear) {
+				// dynamically load music here?
 				Audio.clearBackgroundMusicQueue();
 				Audio.clearBackgroundMusic();
 				bgmClear=true;
@@ -76,9 +77,8 @@ public class LunarState extends StardustState{
 			game.hideStardust();
 			return;
 		}
-		
 		if(bgmClear) {
-			Audio.queueBackgroundMusic("night-city-knight-127028/2-loop-2");
+			Audio.queueBackgroundMusic("80s-synth-wave-110473/loop-lo");
 			bgmClear=false;
 		}
 		
@@ -135,6 +135,9 @@ public class LunarState extends StardustState{
 				State.setCurrentState(0);
 				game.$currentState().reset();
 				game.$currentState().addEntity(new ElectromagneticPulse(game,player.$x(),player.$y()));
+			} else {
+				Audio.clearBackgroundMusicQueue();
+				Audio.clearBackgroundMusic();
 			}
 			game.flashRedBorder();
 			delay-=dt;

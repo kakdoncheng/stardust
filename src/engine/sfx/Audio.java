@@ -13,8 +13,8 @@ public class Audio {
 	
 	private static final int MAX_SFX_SOURCES=24;
 	private static final float SFX_VOLUME_MIN=0.1f;
-	private static final float SFX_VOLUME_MULTIPLIER=1.0f;
-	private static final float BGM_VOLUME_MULTIPLIER=1.0f;
+	private static final float SFX_VOLUME_MULTIPLIER=0.8f;
+	private static final float BGM_VOLUME_MULTIPLIER=0.8f;
 	
 	private static HashMap<String, AudioData> data;
 	private static HashMap<String, Float> sfxq;
@@ -59,13 +59,13 @@ public class Audio {
 					bgm[bgmi].play();
 					System.out.println("engine.sfx.Audio: start: "+bgmk+" "+bgm[bgmi].isPlaying());
 				}
-			}
-			// if opposite index null, pop queue
-			if(bgmq.size()>0) {
-				if(bgm[nexti]==null) {
-					String bgmk=popQueue();
-					bgm[nexti]=new AudioSource(data.get(bgmk), 1*BGM_VOLUME_MULTIPLIER);
-					System.out.println("engine.sfx.Audio: queueing: "+bgmk+" "+bgm[nexti].isPlaying());
+				// if opposite index null, pop queue
+				if(bgmq.size()>0) {
+					if(bgm[nexti]==null) {
+						String bgmk=popQueue();
+						bgm[nexti]=new AudioSource(data.get(bgmk), 1*BGM_VOLUME_MULTIPLIER);
+						System.out.println("engine.sfx.Audio: queueing: "+bgmk+" "+bgm[nexti].isPlaying());
+					}
 				}
 			}
 			

@@ -122,7 +122,7 @@ public class CharGraphics {
 	//new Font("Lucida Console", Font.BOLD, 16);
 	// !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
 	public static void init(){
-		registerFont("./fonts/unifont-14.0.04.ttf");
+		registerFont("./fonts/unifont-15.1.04.otf");
 		map=new HashMap<Character, Texture>();
 		for(char c:alphabet.toCharArray()){
 			loadCharTexture(c);
