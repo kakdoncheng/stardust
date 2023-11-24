@@ -31,10 +31,10 @@ public class CeraphimState extends StardustState{
 	public void reset(){
 		GameFlags.setFlag("warp", 1);
 		clearBackgroundText();
-		ec.clear();
-		ec.setRenderDistance(StardustGame.BOUNDS);
-		sparks.clear();
-		sparks.setRenderDistance(StardustGame.BOUNDS);
+		targetable.clear();
+		targetable.setRenderDistance(StardustGame.BOUNDS);
+		particles.clear();
+		particles.setRenderDistance(StardustGame.BOUNDS);
 		game.$camera().hardCenterOnPoint(0, 0);
 		
 		dis="*.*****                                 ".toCharArray();
@@ -49,7 +49,7 @@ public class CeraphimState extends StardustState{
 		//spawn player
 		boss=null;
 		player=new PlayerStarfighter(game,0,0);
-		ec.addEntity(player);
+		targetable.addEntity(player);
 	}
 
 	public void update(double dt) {
@@ -119,7 +119,7 @@ public class CeraphimState extends StardustState{
 			double dy=Vector.vectorToDy(t, dlim);
 			boss=new Ceraphim(game,player.$x()+dx,player.$y()+dy);
 			boss.setTarget(player);
-			ec.addEntity(boss);
+			targetable.addEntity(boss);
 			//ec.addEntity(new FlashingDestroyIndicator(game, boss, true));
 			//double ci=2*Math.PI;
 			//double cis=ci/256;
@@ -128,12 +128,12 @@ public class CeraphimState extends StardustState{
 			//}
 			
 			StardustEntity pulse=new ElectromagneticPulse(game,boss.$x(),boss.$y());
-			ec.addEntity(pulse);
+			targetable.addEntity(pulse);
 			spawned=1;
 		}
 		
-		ec.update(dt);
-		sparks.update(dt);
+		targetable.update(dt);
+		particles.update(dt);
 		
 	}
 
@@ -145,8 +145,8 @@ public class CeraphimState extends StardustState{
 			return;
 		}
 		
-		ec.render(c);
-		sparks.render(c);
+		targetable.render(c);
+		particles.render(c);
 		
 		String s="";
 		for(char ch:dis){

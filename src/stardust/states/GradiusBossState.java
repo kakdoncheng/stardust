@@ -33,10 +33,10 @@ public class GradiusBossState extends StardustState{
 	
 	public void reset() {
 		GameFlags.setFlag("warp", 1);
-		ec.clear();
-		ec.setRenderDistance(StardustGame.BOUNDS);
-		sparks.clear();
-		sparks.setRenderDistance(StardustGame.BOUNDS);
+		targetable.clear();
+		targetable.setRenderDistance(StardustGame.BOUNDS);
+		particles.clear();
+		particles.setRenderDistance(StardustGame.BOUNDS);
 		
 		dis="*.*****                                ".toCharArray();
 		timer=0;
@@ -49,11 +49,11 @@ public class GradiusBossState extends StardustState{
 		boss=null;
 		player=new PlayerSpacecraft(game, GameFlags.valueOf("player-x"), GameFlags.valueOf("player-y"));
 		player.stopInvt();
-		ec.addEntity(player);
+		targetable.addEntity(player);
 		
 		double dtx=game.$rightScreenEdge()-48;
 		StardustEntity e=new IndicatorDangerRight(game,dtx,0);
-		ec.addEntity(e);
+		targetable.addEntity(e);
 	}
 
 	public void update(double dt) {
@@ -92,7 +92,7 @@ public class GradiusBossState extends StardustState{
 			// move camera
 			double dcx=180*dt;
 			game.$camera().dxy(dcx, 0);
-			for(StardustEntity e:ec.$entities()){
+			for(StardustEntity e:targetable.$entities()){
 				e.setXY(e.$x()+dcx, e.$y());
 			}
 		}
@@ -113,7 +113,7 @@ public class GradiusBossState extends StardustState{
 		if(bossT>6&&spawned<1){
 			boss=new PossessedMachine(game,game.$rightScreenEdge(),0);
 			boss.setTarget(player);
-			ec.addEntity(boss);
+			targetable.addEntity(boss);
 			//ec.addEntity(new FlashingDestroyIndicator(game, boss, true));
 			//StardustEntity pulse=new ElectromagneticPulse(game,boss.$x(),boss.$y());
 			//ec.addEntity(pulse);
@@ -123,14 +123,14 @@ public class GradiusBossState extends StardustState{
 		// set new state/reset
 		// see ceraphim state for reference
 		
-		ec.update(dt);
-		sparks.update(dt);
+		targetable.update(dt);
+		particles.update(dt);
 	}
 
 	public void render(Camera c) {
 		
-		ec.render(c);
-		sparks.render(c);
+		targetable.render(c);
+		particles.render(c);
 		
 		if(GameFlags.is("score")){
 			String s="";

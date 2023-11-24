@@ -47,7 +47,7 @@ import engine.sfx.Audio;
 public class StardustGame extends Game{
 	
 	public static final String credits="Game Design, Programming, & Art: Linh-Han Van 01.01.2022";
-	public static final String version="v0.1.0+20221120";
+	public static final String version="v0.2.0+20221123";
 	
 	public StardustGame() {
 		super(0, 0, "Stardust");
@@ -62,9 +62,7 @@ public class StardustGame extends Game{
 	}
 
 	public void init(){
-		setResolution(1920, 1080);
-		//setResolution(1366, 768);
-		
+
 		GameFlags.init();
 		GameFlags.addFlag("debug");
 		GameFlags.addFlag("debuginv");
@@ -98,13 +96,14 @@ public class StardustGame extends Game{
 		//GameFlags.markFlag("debugfps");
 		GameFlags.markFlag("score");
 		
+		// naive bloom
 		GameFlags.setFlag("enable-altbloom", 1);
 		//GameFlags.setFlag("enable-bloom", 1);
 		GameFlags.setFlag("bloom-intensity", 3);
 		//GameFlags.setFlag("debug-showhitbox", 1);
 		
 		// deprecated, will always load audio from disk
-		GameFlags.setFlag("debug-altwavload", 1);
+		//GameFlags.setFlag("debug-altwavload", 1);
 		
 		// sfx
 		Audio.initAL();
@@ -132,8 +131,30 @@ public class StardustGame extends Game{
 		Audio.loadWavData("pongf4", 1, 1);
 		Audio.loadWavData("pongf5", 1, 1);
 		
+		// bgm
+		// might need to dynamically load?
+		Audio.loadWavData("lifelike-126735/begin", 1, 1);
+		Audio.loadWavData("lifelike-126735/loop-1", 1, 1);
+		Audio.loadWavData("lifelike-126735/loop-2", 1, 1);
+		Audio.loadWavData("lifelike-126735/loop-3", 1, 1);
+		Audio.loadWavData("escape-151399/intro", 1, 1);
+		Audio.loadWavData("escape-151399/loop-1", 1, 1);
+		Audio.loadWavData("escape-151399/loop-2", 1, 1);
+		Audio.loadWavData("night-city-knight-127028/1-intro", 1, 1);
+		Audio.loadWavData("night-city-knight-127028/2-intro", 1, 1);
+		Audio.loadWavData("night-city-knight-127028/2-loop-1", 1, 1);
+		Audio.loadWavData("night-city-knight-127028/2-loop-2", 1, 1);
+		Audio.loadWavData("night-city-knight-127028/3-intro", 1, 1);
+		Audio.loadWavData("night-city-knight-127028/3-loop-lo", 1, 1);
+		Audio.loadWavData("night-city-knight-127028/4-intro-lo", 1, 1);
+		Audio.loadWavData("night-city-knight-127028/4-loop-1", 1, 1);
+		Audio.loadWavData("night-city-knight-127028/4-loop-2", 1, 1);
+		Audio.loadWavData("night-city-knight-127028/4-loop-3", 1, 1);
+		
 		active=true;
-		setFullscreen(true);
+		//setResolution(1920, 1080);
+		setResolution(1366, 768);
+		//setFullscreen(true);
 		setFixedStep(true);
 		//setFPSLimit(30);
 		createDisplay();
@@ -185,6 +206,8 @@ public class StardustGame extends Game{
 		State.addState(27, new HeavyWeaponState(this));
 		State.addState(28, new PongState(this));
 		State.addState(29, new LoopingSpaceInvadersState(this));
+		
+		Audio.enableBackgroundMusic(true);
 		State.setCurrentState(-1);
 		State.$currentState().reset();
 		

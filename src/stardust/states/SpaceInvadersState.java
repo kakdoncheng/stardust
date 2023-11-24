@@ -35,10 +35,10 @@ public class SpaceInvadersState extends StardustState{
 	public void reset() {
 		GameFlags.setFlag("warp", 1);
 		clearBackgroundText();
-		ec.clear();
-		ec.setRenderDistance(StardustGame.BOUNDS);
-		sparks.clear();
-		sparks.setRenderDistance(StardustGame.BOUNDS);
+		targetable.clear();
+		targetable.setRenderDistance(StardustGame.BOUNDS);
+		particles.clear();
+		particles.setRenderDistance(StardustGame.BOUNDS);
 		game.$camera().hardCenterOnPoint(0, 0);
 		bgT=0;
 		
@@ -53,8 +53,8 @@ public class SpaceInvadersState extends StardustState{
 		
 		swarm.setTarget(player);
 		
-		ec.addEntity(player);
-		ec.addEntity(swarm);
+		targetable.addEntity(player);
+		targetable.addEntity(swarm);
 	}
 
 	public void update(double dt) {
@@ -79,16 +79,16 @@ public class SpaceInvadersState extends StardustState{
 				
 				ufodt=game.$prng().$double(1, 4);
 				ufo.setTarget(player);
-				ec.addEntity(ufo);
+				targetable.addEntity(ufo);
 			}
 		}
 		
-		ec.update(dt);
-		sparks.update(dt);
+		targetable.update(dt);
+		particles.update(dt);
 		
 		// tag last alien
 		if(swarm.$lastAlien()!=null&&!tagged){
-			ec.addEntity(new IndicatorDestroy(game, swarm.$lastAlien()));
+			targetable.addEntity(new IndicatorDestroy(game, swarm.$lastAlien()));
 			tagged=true;
 		}
 		
@@ -129,8 +129,8 @@ public class SpaceInvadersState extends StardustState{
 			return;
 		}
 		
-		ec.render(c);
-		sparks.render(c);
+		targetable.render(c);
+		particles.render(c);
 		
 		/*
 		GL11.glDisable(GL11.GL_TEXTURE_2D);

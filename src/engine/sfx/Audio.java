@@ -13,13 +13,15 @@ public class Audio {
 	
 	private static final int MAX_SFX_SOURCES=24;
 	private static final float SFX_VOLUME_MIN=0.1f;
-	private static final float SFX_VOLUME_MULTIPLIER=0.25f;
+	private static final float SFX_VOLUME_MULTIPLIER=1.0f;
+	private static final float BGM_VOLUME_MULTIPLIER=1.0f;
 	
 	private static HashMap<String, AudioData> data;
 	private static HashMap<String, Float> sfxq;
-	private static AudioSoundEffect[] sfx;
+	private static AudioSource[] sfx;
 	private static int sfxi;
 	
+	private static boolean bgmEnabled;
 	private static BackgroundMusicThread bgmt;
 	
 	// background music
@@ -29,7 +31,7 @@ public class Audio {
 		
 		private boolean running;
 		private int bgmi;
-		private AudioSoundEffect[] bgm;
+		private AudioSource[] bgm;
 		private ArrayList<String> bgmq;
 		
 		public void detach(){
@@ -38,7 +40,7 @@ public class Audio {
 		
 		private void init(){
 			bgmi=0;
-			bgm=new AudioSoundEffect[2];
+			bgm=new AudioSource[2];
 			bgmq=new ArrayList<String>();
 			running=true;
 		}
@@ -49,17 +51,21 @@ public class Audio {
 			
 			// check queue first,
 			// if queue.size > 0, check buffers
+			// if current index null, pop queue & play current index
 			if(bgmq.size()>0) {
-				// if current index null, pop queue & play current index
 				if(bgm[bgmi]==null) {
 					String bgmk=popQueue();
-					bgm[bgmi]=new AudioSoundEffect(data.get(bgmk), 1);
+					bgm[bgmi]=new AudioSource(data.get(bgmk), 1*BGM_VOLUME_MULTIPLIER);
 					bgm[bgmi].play();
+					System.out.println("engine.sfx.Audio: start: "+bgmk+" "+bgm[bgmi].isPlaying());
 				}
-				// if opposite index null, pop queue
+			}
+			// if opposite index null, pop queue
+			if(bgmq.size()>0) {
 				if(bgm[nexti]==null) {
 					String bgmk=popQueue();
-					bgm[bgmi]=new AudioSoundEffect(data.get(bgmk), 1);
+					bgm[nexti]=new AudioSource(data.get(bgmk), 1*BGM_VOLUME_MULTIPLIER);
+					System.out.println("engine.sfx.Audio: queueing: "+bgmk+" "+bgm[nexti].isPlaying());
 				}
 			}
 			
@@ -70,8 +76,9 @@ public class Audio {
 					bgm[bgmi].destroy();
 					bgm[bgmi]=null;
 					bgmi=nexti;
+					System.out.println("engine.sfx.Audio: swap: "+bgm[bgmi]);
 				}
-				// then play current index
+				// finally play current index
 				bgm[bgmi].play();
 			}
 			
@@ -84,6 +91,20 @@ public class Audio {
 		}
 		private synchronized String popQueue() {
 			return bgmq.remove(0);
+		}
+		
+		// handbrake
+		public synchronized void clearBuffers() {
+			for(int i=0; i<bgm.length; i++) {
+				if(bgm[i]!=null) {
+					bgm[i].pause();
+					bgm[i].destroy();
+					bgm[i]=null;
+				}
+			}
+		}
+		public synchronized void clearQueue() {
+			bgmq.clear();
 		}
 		
 		public void run(){
@@ -108,10 +129,11 @@ public class Audio {
 		}
 	}
 	
+	
 	// sound effects
 	public static int $sfxCount(){
 		int c=0;
-		for(AudioSoundEffect a:sfx){
+		for(AudioSource a:sfx){
 			if(a!=null && a.isPlaying()){
 				c++;
 			}
@@ -140,35 +162,46 @@ public class Audio {
 		}
 		sfxq.clear();
 	}
-	private static void playSoundEffect(String key, float volume){
+	public static void playSoundEffect(String key, float volume){
+		playSoundEffect(key, volume, 0);
+	}
+	public static void playSoundEffect(String key, float volume, int priority){
 		if(sfx[sfxi]!=null){
-			// find next unused index
-			// do not play sfx if full
-			/*
-			if($sfxCount()<MAX_SFX_SOURCES){
-				while(sfx[sfxi].isPlaying()){
-					sfxi+=1;
-					sfxi%=sfx.length;
+			// find next non-playing, non-priority index
+			// if no such index available, do not play sfx
+			// else if index not null, destroy and add new sfx
+			int sfxic=0;
+			while(sfx[sfxi].$priorityLevel()>=priority && sfx[sfxi].isPlaying()){
+				if(sfxic>=MAX_SFX_SOURCES) {
+					return;
 				}
-			}else{
-				return;
+				sfxic+=1;
+				sfxi+=1;
+				sfxi%=sfx.length;
 			}
-			//*/
 			sfx[sfxi].destroy();
 		}
-		sfx[sfxi]=new AudioSoundEffect(data.get(key), volume*SFX_VOLUME_MULTIPLIER);
+		sfx[sfxi]=new AudioSource(data.get(key), volume*SFX_VOLUME_MULTIPLIER, priority);
 		sfx[sfxi].play();
 		sfxi+=1;
 		sfxi%=sfx.length;
 	}
 	
-	
 	// background music
+	public static void enableBackgroundMusic(boolean yes) {
+		bgmEnabled=yes;
+	}
 	public static void queueBackgroundMusic(String key){
-		if(data.get(key)==null){
+		if(!bgmEnabled || data.get(key)==null){
 			return;
 		}
 		bgmt.addToQueue(key);
+	}
+	public static void clearBackgroundMusic() {
+		bgmt.clearBuffers();
+	}
+	public static void clearBackgroundMusicQueue() {
+		bgmt.clearQueue();
 	}
 	
 	// loading wav data
@@ -179,7 +212,7 @@ public class Audio {
 		AudioData dat=null;
 		try{
 			// always load from disk
-			dat=new AudioData("./amb/"+name+".wav", pitch, gain, true);
+			dat=new AudioData("./amb/"+name+".wav", pitch, gain);
 			/*
 			if(GameFlags.is("debug-altwavload")){
 				dat=new AudioData("./amb/"+name+".wav", pitch, gain, true);
@@ -195,7 +228,6 @@ public class Audio {
 		data.put(name, dat);
 	}
 	
-	
 	// create/destroy AL functions
 	public static void initAL(){
 		// init openal
@@ -209,12 +241,13 @@ public class Audio {
 		AL10.alGetError();
 		
 		// init sfx
-		sfx=new AudioSoundEffect[MAX_SFX_SOURCES];
+		sfx=new AudioSource[MAX_SFX_SOURCES];
 		sfxi=0;
 		data=new HashMap<String, AudioData>();
 		sfxq=new HashMap<String, Float>();
 		
 		// init bgm thread
+		bgmEnabled=false;
 		bgmt=new Audio().new BackgroundMusicThread();
 		bgmt.start();
 		

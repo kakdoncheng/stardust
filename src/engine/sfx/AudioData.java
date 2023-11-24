@@ -6,8 +6,6 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.util.WaveData;
 
-import engine.Game;
-
 public class AudioData {
 	
 	private float pitch;
@@ -32,7 +30,7 @@ public class AudioData {
 		AL10.alDeleteBuffers(buffer);
 	}
 	
-	public AudioData(String path, float pitch, float gain, boolean loadFromDisk){
+	public AudioData(String path, float pitch, float gain) {//, boolean loadFromDisk){
 		
 		buffer=BufferUtils.createIntBuffer(1);
 		this.pitch=pitch;
@@ -47,11 +45,15 @@ public class AudioData {
 		}
 		
 		WaveData waveFile=null;
+		// always load from disk
+		waveFile=WaveData.create(path);
+		/*
 		if(loadFromDisk){
 			waveFile=WaveData.create(path);
 		}else{
 			waveFile=WaveData.create(Game.class.getResourceAsStream(path));
 		}
+		//*/
 		AL10.alBufferData(buffer.get(0), waveFile.format, waveFile.data, waveFile.samplerate);
 		waveFile.dispose();
 	}

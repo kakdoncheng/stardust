@@ -56,15 +56,15 @@ public class PongState extends StardustState{
 		delay=1;
 		pw=6;
 		ball=new PongBall(game, game.$prng().$double(0, 1)>0.5?game.$prng().$double(Math.PI*1.25, Math.PI*1.75):game.$prng().$double(Math.PI*0.25, Math.PI*0.75));
-		ec.addEntity(ball);
+		targetable.addEntity(ball);
 		resetPos();
 	}
 	
 	public void reset() {
 		GameFlags.setFlag("warp", 1);
 		clearBackgroundText();
-		ec.clear();
-		ec.setRenderDistance(StardustGame.BOUNDS);
+		targetable.clear();
+		targetable.setRenderDistance(StardustGame.BOUNDS);
 		game.$camera().hardCenterOnPoint(0, 0);
 		bgT=0;
 		pscore=0;
@@ -117,7 +117,7 @@ public class PongState extends StardustState{
 			Audio.addSoundEffect("pongf5", 1);
 		}
 				
-		ec.update(dt);
+		targetable.update(dt);
 		
 		// check score
 		if(ball.$x()<game.$leftScreenEdge()){
@@ -196,7 +196,7 @@ public class PongState extends StardustState{
 		GL11.glPopMatrix();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		
-		ec.render(c);
+		targetable.render(c);
 		
 		// score
 		CharGraphics.drawTitleString(pscore+"",

@@ -11,6 +11,7 @@ import stardust.gfx.CharGraphics;
 import engine.GameFlags;
 import engine.State;
 import engine.gfx.Camera;
+import engine.sfx.Audio;
 
 public class PortalScreen extends StardustState{
 
@@ -26,6 +27,8 @@ public class PortalScreen extends StardustState{
 	private StardustEntity player;
 	
 	public void reset() {
+		Audio.queueBackgroundMusic("lifelike-126735/begin");
+		
 		GameFlags.setFlag("begin", 0);
 		GameFlags.setFlag("warp", 0);
 		GameFlags.setFlag("asteroids", 0);
@@ -38,10 +41,10 @@ public class PortalScreen extends StardustState{
 		GameFlags.setFlag("terra", 0);
 		game.resetScore();
 		game.resetWarpFlags();
-		ec.clear();
-		ec.setRenderDistance(StardustGame.BOUNDS);
-		sparks.clear();
-		sparks.setRenderDistance(StardustGame.BOUNDS);
+		targetable.clear();
+		targetable.setRenderDistance(StardustGame.BOUNDS);
+		particles.clear();
+		particles.setRenderDistance(StardustGame.BOUNDS);
 		//game.$camera().hardCenterOnPoint(0, 0);
 		
 		player=new PortalScreenPlayer(game, game.$prng().$double(-360, 360), game.$prng().$double(-360, 360));

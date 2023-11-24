@@ -12,6 +12,7 @@ import engine.GameFlags;
 import engine.State;
 import engine.Vector;
 import engine.gfx.Camera;
+import engine.sfx.Audio;
 
 public class LunarState extends StardustState{
 
@@ -21,6 +22,7 @@ public class LunarState extends StardustState{
 	}
 
 	// internal flags/var
+	private boolean bgmClear;
 	private double gF;
 	private double bgT;
 	private double debrisdt;
@@ -33,16 +35,18 @@ public class LunarState extends StardustState{
 	public void reset() {
 		GameFlags.setFlag("warp", 1);
 		clearBackgroundText();
-		ec.clear();
-		ec.setRenderDistance(StardustGame.BOUNDS);
-		sparks.clear();
-		sparks.setRenderDistance(StardustGame.BOUNDS);
+		targetable.clear();
+		targetable.setRenderDistance(StardustGame.BOUNDS);
+		particles.clear();
+		particles.setRenderDistance(StardustGame.BOUNDS);
 		game.$camera().hardCenterOnPoint(0, 0);
 		bgT=0;
 		delay=1;
 		
 		gF=5;
 		debrisdt=0;
+		
+		bgmClear=false;
 		
 		player=new PlayerLunarModule(game);
 		double t=game.$prng().$double(0, 2*Math.PI);
@@ -54,21 +58,32 @@ public class LunarState extends StardustState{
 		
 		moon=new Luna(game);
 		
-		ec.addEntity(player);
-		ec.addEntity(moon);
+		targetable.addEntity(player);
+		targetable.addEntity(moon);
 		//ec.addEntity(new FlashingDefendIndicator(game, moon, true));
 	}
 
 	public void update(double dt) {
 		if(bgT<0.5){
 			bgT+=dt;
+			if(!bgmClear) {
+				Audio.clearBackgroundMusicQueue();
+				Audio.clearBackgroundMusic();
+				bgmClear=true;
+			}
+			
 			updateBackgroundText();
 			game.hideStardust();
 			return;
 		}
 		
+		if(bgmClear) {
+			Audio.queueBackgroundMusic("night-city-knight-127028/2-loop-2");
+			bgmClear=false;
+		}
+		
 		// gravity vector towards moon
-		for(StardustEntity e:ec.$entities()){
+		for(StardustEntity e:targetable.$entities()){
 			double gt=e.directionTo(moon);
 			e.applyAccelerationVector(gt, gF, dt);
 		}
@@ -80,11 +95,11 @@ public class LunarState extends StardustState{
 			int ds=game.$prng().$int(-4, 8);
 			StardustEntity e=new Asteroid(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2),ds);
 			debrisdt=game.$prng().$double(0.125, 2);
-			ec.addEntity(e);
+			targetable.addEntity(e);
 		}
 		
 		// moon collisions
-		for(StardustEntity e:ec.$entities()){
+		for(StardustEntity e:targetable.$entities()){
 			if(!e.isCollidable() || e==moon){
 				continue;
 			}
@@ -95,8 +110,8 @@ public class LunarState extends StardustState{
 			}
 		}
 		
-		ec.update(dt);
-		sparks.update(dt);
+		targetable.update(dt);
+		particles.update(dt);
 		
 		// check end condition
 		double error=Math.abs(Vector.tdistanceFromTo(player.directionTo(moon), player.$t()));
@@ -142,8 +157,8 @@ public class LunarState extends StardustState{
 			return;
 		}
 		
-		ec.render(c);
-		sparks.render(c);
+		targetable.render(c);
+		particles.render(c);
 		
 		if(GameFlags.is("score")){
 			CharGraphics.drawHeaderString(game.$obfScore(),

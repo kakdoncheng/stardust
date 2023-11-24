@@ -50,10 +50,10 @@ public class MissileCommandState extends StardustState{
 	public void reset() {
 		GameFlags.setFlag("warp", 1);
 		clearBackgroundText();
-		ec.clear();
-		ec.setRenderDistance(StardustGame.BOUNDS);
-		sparks.clear();
-		sparks.setRenderDistance(StardustGame.BOUNDS);
+		targetable.clear();
+		targetable.setRenderDistance(StardustGame.BOUNDS);
+		particles.clear();
+		particles.setRenderDistance(StardustGame.BOUNDS);
 		game.$camera().hardCenterOnPoint(0, 0);
 		bgT=0;
 		delay=1;
@@ -72,24 +72,24 @@ public class MissileCommandState extends StardustState{
 		for(int i=0;i<3;i++){
 			Silo a=new Silo(game, -220+(i*220), 125);
 			silos.add(a);
-			ec.addEntity(a);
+			targetable.addEntity(a);
 		}
 		
 		// cities
 		//cities=new ArrayList<City>();
 		for(int i=0;i<3;i++){
 			City a=new City(game, -150+(i*45), 140);
-			ec.addEntity(a);
-			ec.addEntity(new IndicatorDefend(game,-150+(i*45), 128));
+			targetable.addEntity(a);
+			targetable.addEntity(new IndicatorDefend(game,-150+(i*45), 128));
 			//cities.add(a);
 		}
 		for(int i=0;i<3;i++){
 			City a=new City(game, 150-(i*45), 140);
-			ec.addEntity(a);
-			ec.addEntity(new IndicatorDefend(game, 150-(i*45), 128));
+			targetable.addEntity(a);
+			targetable.addEntity(new IndicatorDefend(game, 150-(i*45), 128));
 			//cities.add(a);
 		}
-		ec.addEntity(new RadarTower(game, 110, 140));
+		targetable.addEntity(new RadarTower(game, 110, 140));
 	}
 
 	public void update(double dt) {
@@ -101,9 +101,9 @@ public class MissileCommandState extends StardustState{
 		}
 		
 		if(warheads<1 && !tagged && !Warhead.isFF()){
-			for(StardustEntity e:ec.$entities()){
+			for(StardustEntity e:targetable.$entities()){
 				if(e instanceof Warhead){
-					ec.addEntity(new IndicatorDestroy(game, e));
+					targetable.addEntity(new IndicatorDestroy(game, e));
 				}
 			}
 			tagged=true;
@@ -123,7 +123,7 @@ public class MissileCommandState extends StardustState{
 					double ty=120;
 					e.setDirection(Vector.directionFromTo(e.$x(), e.$y(), tx, ty));
 					e.setSpeedVector(Vector.directionFromTo(e.$x(), e.$y(), tx, ty), 45);
-					ec.addEntity(e);
+					targetable.addEntity(e);
 					warheads--;
 					dis=String.format("0.%05d", warheads).toCharArray();
 				}
@@ -140,7 +140,7 @@ public class MissileCommandState extends StardustState{
 					double ty=120;
 					e.setDirection(Vector.directionFromTo(e.$x(), e.$y(), tx, ty));
 					e.setSpeedVector(Vector.directionFromTo(e.$x(), e.$y(), tx, ty), 45);
-					ec.addEntity(e);
+					targetable.addEntity(e);
 					warheads--;
 					dis=String.format("0.%05d", warheads).toCharArray();
 				}
@@ -169,8 +169,8 @@ public class MissileCommandState extends StardustState{
     	}else{
     		click=false;
     	}
-		ec.update(dt);
-		sparks.update(dt);
+		targetable.update(dt);
+		particles.update(dt);
 		
 		// speed up warheads when no ammo left
 		boolean isff=true;
@@ -181,7 +181,7 @@ public class MissileCommandState extends StardustState{
 		}
 		// only speed up warheads when all ammo has exploded
 		if(isff){
-			for(StardustEntity e:ec.$entities()){
+			for(StardustEntity e:targetable.$entities()){
 				if(e instanceof AnnihilatingMissile){
 					isff=false;
 					break;
@@ -197,7 +197,7 @@ public class MissileCommandState extends StardustState{
 		}
 		
 		// trigger warheads that hit ground
-		for(StardustEntity e:ec.$entities()){
+		for(StardustEntity e:targetable.$entities()){
 			if(e instanceof Warhead){
 				if(e.$y()>140){
 					e.deactivate();
@@ -210,7 +210,7 @@ public class MissileCommandState extends StardustState{
 		double ly=0;
 		double lx2=0;
 		double ly2=0;
-		for(StardustEntity e:ec.$lastRemovedEntities()){
+		for(StardustEntity e:targetable.$lastRemovedEntities()){
 			if(e instanceof AnnihilatingExplosion){
 				lx=e.$x();
 				ly=e.$y();
@@ -222,8 +222,8 @@ public class MissileCommandState extends StardustState{
 		}
 		
 		// check end condition
-		if(ec.$sizeOf(City.class)<1 || (warheads<1 && ec.$sizeOf(Warhead.class)<1 && ec.$sizeOf(WarheadExplosion.class)<1 && ec.$sizeOf(AnnihilatingExplosion.class)<1)){
-			if(ec.$sizeOf(City.class)>0){
+		if(targetable.$sizeOf(City.class)<1 || (warheads<1 && targetable.$sizeOf(Warhead.class)<1 && targetable.$sizeOf(WarheadExplosion.class)<1 && targetable.$sizeOf(AnnihilatingExplosion.class)<1)){
+			if(targetable.$sizeOf(City.class)>0){
 				// win
 				// set game flags player xy & success
 				// set stage back to endless
@@ -304,8 +304,8 @@ public class MissileCommandState extends StardustState{
 		GL11.glPopMatrix();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		
-		ec.render(c);
-		sparks.render(c);
+		targetable.render(c);
+		particles.render(c);
 		VectorGraphics.renderDotCursor();
 		
 		if(GameFlags.is("score")){

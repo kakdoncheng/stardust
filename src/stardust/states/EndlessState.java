@@ -50,6 +50,7 @@ import engine.GameFlags;
 import engine.State;
 import engine.Vector;
 import engine.gfx.Camera;
+import engine.sfx.Audio;
 
 public class EndlessState extends StardustState{
 
@@ -83,10 +84,10 @@ public class EndlessState extends StardustState{
 	
 	public void reset() {
 		GameFlags.setFlag("warp", 0);
-		ec.clear();
-		ec.setRenderDistance(StardustGame.BOUNDS);
-		sparks.clear();
-		sparks.setRenderDistance(StardustGame.BOUNDS);
+		targetable.clear();
+		targetable.setRenderDistance(StardustGame.BOUNDS);
+		particles.clear();
+		particles.setRenderDistance(StardustGame.BOUNDS);
 		//game.$camera().hardCenterOnPoint(0, 0);
 		
 		debris=new ArrayList<StardustEntity>();
@@ -105,6 +106,20 @@ public class EndlessState extends StardustState{
 		sputnikdt=9;
 		voyager=null;
 		voyagerdt=12;
+		
+		// bgm
+		if(game.$stage()<1) {
+			Audio.queueBackgroundMusic("lifelike-126735/loop-1");
+			Audio.queueBackgroundMusic("lifelike-126735/loop-1");
+			Audio.queueBackgroundMusic("lifelike-126735/loop-2");
+		}else if(game.$stage()<9) {
+			Audio.clearBackgroundMusicQueue();
+			Audio.clearBackgroundMusic();
+			Audio.queueBackgroundMusic("escape-151399/intro");
+			Audio.queueBackgroundMusic("escape-151399/loop-1");
+			Audio.queueBackgroundMusic("escape-151399/loop-1");
+			Audio.queueBackgroundMusic("escape-151399/loop-2");
+		}
 		
 		if(GameFlags.is("success")){
 			GameFlags.setFlag("success", 0);
@@ -127,14 +142,14 @@ public class EndlessState extends StardustState{
 		
 		//player=new PlayerSpaceship(game, GameFlags.$valueOf("player-x"), GameFlags.$valueOf("player-y"));
 		//player=new ClassicPlayerSpaceship(game, GameFlags.$valueOf("player-x"), GameFlags.$valueOf("player-y"));
-		ec.addEntity(player);
+		targetable.addEntity(player);
 		
 		double t=game.$prng().$double(0, 2*Math.PI);
 		gate=new GateAsteroid(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/4),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/4));
-		ec.addEntity(gate);
+		targetable.addEntity(gate);
 		if(!GameFlags.is("begin")){
 			GameFlags.setFlag("begin", 1);
-			ec.addEntity(new IndicatorDestroy(game, gate));
+			targetable.addEntity(new IndicatorDestroy(game, gate));
 		}else{
 			gate.deactivate();
 		}
@@ -167,7 +182,7 @@ public class EndlessState extends StardustState{
 			if(game.$prng().$double(0, 1)<0.001){
 				double t=game.$prng().$double(0, 2*Math.PI);
 				StardustEntity e=new RadarSatellite(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
-				ec.addEntity(e);
+				targetable.addEntity(e);
 			}
 			//if(game.$prng().$double(0, 1)<0.00075){
 			//	double t=game.$prng().$double(0, 2*Math.PI);
@@ -180,7 +195,7 @@ public class EndlessState extends StardustState{
 					double t=game.$prng().$double(0, 2*Math.PI);
 					StardustEntity e=new Starfighter(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
 					e.setTarget(player);
-					ec.addEntity(e);
+					targetable.addEntity(e);
 				}
 			}
 			if(game.$stage()>1){
@@ -188,7 +203,7 @@ public class EndlessState extends StardustState{
 					double t=game.$prng().$double(0, 2*Math.PI);
 					StardustEntity e=new StarfighterTypeC(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
 					e.setTarget(player);
-					ec.addEntity(e);
+					targetable.addEntity(e);
 				}
 			}
 			if(game.$stage()>2){
@@ -197,7 +212,7 @@ public class EndlessState extends StardustState{
 					StardustEntity e=new Drone(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
 					e.setTarget(player);
 					e.setSpeedVector(e.directionTo(player), 60);
-					ec.addEntity(e);
+					targetable.addEntity(e);
 				}
 			}
 			if(game.$stage()>3){
@@ -205,7 +220,7 @@ public class EndlessState extends StardustState{
 					double t=game.$prng().$double(0, 2*Math.PI);
 					StardustEntity e=new StarfighterTypeM(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
 					e.setTarget(player);
-					ec.addEntity(e);
+					targetable.addEntity(e);
 				}
 			}
 			if(game.$stage()>4){
@@ -213,7 +228,7 @@ public class EndlessState extends StardustState{
 					double t=game.$prng().$double(0, 2*Math.PI);
 					StardustEntity e=new StarfighterTypeN(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
 					e.setTarget(player);
-					ec.addEntity(e);
+					targetable.addEntity(e);
 				}
 			}
 			if(game.$stage()>5){
@@ -222,7 +237,7 @@ public class EndlessState extends StardustState{
 					StardustEntity e=new DroneTypeH(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
 					e.setTarget(player);
 					e.setSpeedVector(e.directionTo(player), 60);
-					ec.addEntity(e);
+					targetable.addEntity(e);
 				}
 			}
 			
@@ -232,13 +247,13 @@ public class EndlessState extends StardustState{
 					double t=game.$prng().$double(0, 2*Math.PI);
 					StardustEntity e=new StarfighterTypeI(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
 					e.setTarget(player);
-					ec.addEntity(e);
+					targetable.addEntity(e);
 				}
 				if(game.$prng().$double(0, 1)<0.002){
 					double t=game.$prng().$double(0, 2*Math.PI);
 					StardustEntity e=new StarfighterTypeE(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
 					e.setTarget(player);
-					ec.addEntity(e);
+					targetable.addEntity(e);
 				}
 			}
 			if(game.$stage()>7){
@@ -247,7 +262,7 @@ public class EndlessState extends StardustState{
 					StardustEntity e=new DroneTypeL(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
 					e.setTarget(player);
 					e.setSpeedVector(e.directionTo(player), 60);
-					ec.addEntity(e);
+					targetable.addEntity(e);
 				}
 			}
 			if(game.$stage()>8){
@@ -261,7 +276,7 @@ public class EndlessState extends StardustState{
 						double t=game.$prng().$double(0, 2*Math.PI);
 						lunars=new ApolloServiceModule(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
 						lunarsdt=game.$prng().$double(30, 90);
-						ec.addEntity(lunars);
+						targetable.addEntity(lunars);
 					}
 				}
 				if(lunar==null||!lunar.isActive()){
@@ -270,7 +285,7 @@ public class EndlessState extends StardustState{
 						double t=game.$prng().$double(0, 2*Math.PI);
 						lunar=new ApolloLunarModule(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
 						lunardt=game.$prng().$double(30, 90);
-						ec.addEntity(lunar);
+						targetable.addEntity(lunar);
 					}
 				}
 				if(vostok==null||!vostok.isActive()){
@@ -279,7 +294,7 @@ public class EndlessState extends StardustState{
 						double t=game.$prng().$double(0, 2*Math.PI);
 						vostok=new VostokOne(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
 						vostokdt=game.$prng().$double(30, 90);
-						ec.addEntity(vostok);
+						targetable.addEntity(vostok);
 					}
 				}
 				if(sputnik==null||!sputnik.isActive()){
@@ -288,7 +303,7 @@ public class EndlessState extends StardustState{
 						double t=game.$prng().$double(0, 2*Math.PI);
 						sputnik=new SputnikOne(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
 						sputnikdt=game.$prng().$double(30, 90);
-						ec.addEntity(sputnik);
+						targetable.addEntity(sputnik);
 					}
 				}
 				if(voyager==null||!voyager.isActive()){
@@ -297,7 +312,7 @@ public class EndlessState extends StardustState{
 						double t=game.$prng().$double(0, 2*Math.PI);
 						voyager=new VoyagerOne(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
 						voyagerdt=game.$prng().$double(30, 90);
-						ec.addEntity(voyager);
+						targetable.addEntity(voyager);
 					}
 				}
 			}
@@ -308,14 +323,14 @@ public class EndlessState extends StardustState{
 					double t=game.$prng().$double(0, 2*Math.PI);
 					StardustEntity e=new StarfighterTypeB(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
 					e.setTarget(player);
-					ec.addEntity(e);
+					targetable.addEntity(e);
 				}
 				if(game.$prng().$double(0, 1)<0.0025){
 					double t=game.$prng().$double(0, 2*Math.PI);
 					StardustEntity e=new DroneTypeB(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
 					e.setTarget(player);
 					e.setSpeedVector(e.directionTo(player), 60);
-					ec.addEntity(e);
+					targetable.addEntity(e);
 				}
 			}
 			
@@ -325,13 +340,13 @@ public class EndlessState extends StardustState{
 					double t=game.$prng().$double(0, 2*Math.PI);
 					StardustEntity e=new Bogey(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
 					e.setTarget(player);
-					ec.addEntity(e);
+					targetable.addEntity(e);
 				}
 				if(game.$prng().$double(0, 1)<0.00125){
 					double t=game.$prng().$double(0, 2*Math.PI);
 					StardustEntity e=new DumbBogey(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
 					e.setTarget(player);
-					ec.addEntity(e);
+					targetable.addEntity(e);
 				}
 			}
 			
@@ -341,13 +356,13 @@ public class EndlessState extends StardustState{
 					double t=game.$prng().$double(0, 2*Math.PI);
 					StardustEntity e=new SmallAlienFormation(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
 					//e.setSwornTarget(player);
-					ec.addEntity(e);
+					targetable.addEntity(e);
 				}
 				if(game.$prng().$double(0, 1)<0.001){
 					double t=game.$prng().$double(0, 2*Math.PI);
 					StardustEntity e=new Ufo(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
 					//e.setSwornTarget(player);
-					ec.addEntity(e);
+					targetable.addEntity(e);
 				}
 			}
 			
@@ -360,7 +375,7 @@ public class EndlessState extends StardustState{
 					StardustEntity e=new ReplicatingMine(game, xx, yy,
 							Vector.directionFromTo(xx, yy, player.$x(), player.$y()));
 					//e.setSwornTarget(player);
-					ec.addEntity(e);
+					targetable.addEntity(e);
 				}
 			}
 			
@@ -369,31 +384,31 @@ public class EndlessState extends StardustState{
 				if(game.$prng().$double(0, 1)<0.0025){
 					double tx=game.$camera().$dx()+game.$prng().$double(-220, 220);
 					double ty=game.$camera().$dy()-game.$displayHeight()/game.$camera().$zoom()/2;
-					ec.addEntity(new MartianFighter(game,tx,ty));
+					targetable.addEntity(new MartianFighter(game,tx,ty));
 				}
 				if(game.$prng().$double(0, 1)<0.0025){
 					double tx=game.$camera().$dx()+game.$prng().$double(-220, 220);
 					double ty=game.$camera().$dy()-game.$displayHeight()/game.$camera().$zoom()/2;
-					ec.addEntity(new MartianFighterTypeT(game,tx,ty));
+					targetable.addEntity(new MartianFighterTypeT(game,tx,ty));
 				}
 				if(game.$prng().$double(0, 1)<0.0025){
 					double tx=game.$camera().$dx()+game.$prng().$double(-220, 220);
 					double ty=game.$camera().$dy()-game.$displayHeight()/game.$camera().$zoom()/2;
-					ec.addEntity(new MartianSwarmTypeS(game,tx,ty));
+					targetable.addEntity(new MartianSwarmTypeS(game,tx,ty));
 				}
 				if(game.$prng().$double(0, 1)<0.005){
 					double tx=game.$camera().$dx()+game.$prng().$double(-220, 220);
 					double ty=game.$camera().$dy()-game.$displayHeight()/game.$camera().$zoom()/2;
 					StardustEntity e=new MartianFighterTypeH(game,tx,ty);
 					e.setTarget(player);
-					ec.addEntity(e);
+					targetable.addEntity(e);
 				}
 				if(game.$prng().$double(0, 1)<0.005){
 					double tx=game.$camera().$dx()+game.$prng().$double(-220, 220);
 					double ty=game.$camera().$dy()-game.$displayHeight()/game.$camera().$zoom()/2;
 					StardustEntity e=new MartianFighterTypeM(game,tx,ty);
 					e.setTarget(player);
-					ec.addEntity(e);
+					targetable.addEntity(e);
 				}
 			}
 			
@@ -404,26 +419,26 @@ public class EndlessState extends StardustState{
 					double ty=game.$camera().$dy()+game.$prng().$double(-140, 140);
 					StardustEntity e=new GradiusFighterTypeE(game,tx,ty);
 					e.setTarget(player);
-					ec.addEntity(e);
+					targetable.addEntity(e);
 				}
 				if(game.$prng().$double(0, 1)<0.0025){
 					double tx=game.$rightScreenEdge();
 					double ty=game.$camera().$dy()+game.$prng().$double(-140, 140);
 					StardustEntity e=new GradiusFighterTypeH(game,tx,ty);
 					e.setTarget(player);
-					ec.addEntity(e);
+					targetable.addEntity(e);
 				}
 				if(game.$prng().$double(0, 1)<0.005){
 					double tx=game.$rightScreenEdge();
 					double ty=game.$camera().$dy()+game.$prng().$double(-140, 140);
 					StardustEntity e=new GradiusFighterTypeM(game,tx,ty);
-					ec.addEntity(e);
+					targetable.addEntity(e);
 				}
 				if(game.$prng().$double(0, 1)<0.0025){
 					double tx=game.$rightScreenEdge()+8;
 					double ty=game.$camera().$dy()+game.$prng().$double(-140, 140);
 					StardustEntity e=new GradiusDroneSwarm(game,tx,ty);
-					ec.addEntity(e);
+					targetable.addEntity(e);
 				}
 			}
 			
@@ -448,16 +463,16 @@ public class EndlessState extends StardustState{
 						game.$camera().$dy()+Vector.vectorToDy(t,StardustGame.BOUNDS/2),
 						ds);
 				debris.add(de);
-				ec.addEntity(de);
+				targetable.addEntity(de);
 			}
 		}
 		
 		
-		ec.update(dt);
-		sparks.update(dt);
+		targetable.update(dt);
+		particles.update(dt);
 		
 		// scoring
-		for(StardustEntity e:ec.$lastRemovedEntities()){
+		for(StardustEntity e:targetable.$lastRemovedEntities()){
 			if(e.$killer()==player){
 				//double mult=1+(player.$speed()/200);
 				//game.addToScore((int)(e.points()*mult));
@@ -469,6 +484,8 @@ public class EndlessState extends StardustState{
 		
 		// auto reset on player death
 		if(!player.isActive()){
+			Audio.clearBackgroundMusicQueue();
+			Audio.clearBackgroundMusic();
 			//rc.deactivate();
 			game.flashRedBorder();
 			delay-=dt;
@@ -484,8 +501,8 @@ public class EndlessState extends StardustState{
 	}
 
 	public void render(Camera c) {
-		ec.render(c);
-		sparks.render(c);
+		targetable.render(c);
+		particles.render(c);
 		
 		// render cursor
 		//VectorGraphics.renderDotCursor();
