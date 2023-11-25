@@ -82,15 +82,14 @@ public class AsteroidsState extends StardustState{
 			return;
 		}
 		if(bgmClear) {
-			Audio.queueBackgroundMusic("night-city-knight-127028/3-loop-lo");
-			Audio.queueBackgroundMusic("night-city-knight-127028/4-intro-lo");
-			Audio.queueBackgroundMusic("night-city-knight-127028/4-loop-1");
-			Audio.queueBackgroundMusic("night-city-knight-127028/4-loop-1");
-			Audio.queueBackgroundMusic("night-city-knight-127028/4-loop-2");
-			Audio.queueBackgroundMusic("night-city-knight-127028/4-loop-2");
-			Audio.queueBackgroundMusic("night-city-knight-127028/4-loop-2");
-			Audio.queueBackgroundMusic("night-city-knight-127028/4-loop-2");
-			Audio.queueBackgroundMusic("night-city-knight-127028/4-loop-3");
+			double rnd=game.$prng().$double(0, 1);
+			if(rnd<0.5) {
+				Audio.queueBackgroundMusic("synthwave-background-music-155701/intro-1");
+				Audio.queueBackgroundMusic("synthwave-background-music-155701/loop");
+			} else {
+				Audio.queueBackgroundMusic("synthwave-background-music-155701/intro-2");
+				Audio.queueBackgroundMusic("synthwave-background-music-155701/loop");
+			}
 			bgmClear=false;
 		}
 		

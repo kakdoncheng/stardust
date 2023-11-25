@@ -10,6 +10,7 @@ import stardust.gfx.CharGraphics;
 import engine.GameFlags;
 import engine.State;
 import engine.gfx.Camera;
+import engine.sfx.Audio;
 
 public class GradiusBossState extends StardustState{
 
@@ -61,6 +62,8 @@ public class GradiusBossState extends StardustState{
 		if((boss!=null && boss.$health()<1) || !player.isActive()){
 			delay-=dt;
 			if(!player.isActive()){
+				Audio.clearBackgroundMusicQueue();
+				Audio.clearBackgroundMusic();
 				game.flashRedBorder();
 				if(delay>1){
 					delay=1;
@@ -68,6 +71,8 @@ public class GradiusBossState extends StardustState{
 			}
 			if(delay<=0){
 				if(player.isActive()){
+					Audio.clearBackgroundMusicQueue();
+					Audio.clearBackgroundMusic();
 					GameFlags.markFlag("gradius");
 					GameFlags.setFlag("success", 1);
 					GameFlags.setFlag("player-x", (int)player.$x());
@@ -76,6 +81,8 @@ public class GradiusBossState extends StardustState{
 					game.$currentState().reset();
 					game.$currentState().addEntity(new ElectromagneticPulse(game,boss.$x(),boss.$y()));
 				}else{
+					Audio.clearBackgroundMusicQueue();
+					Audio.clearBackgroundMusic();
 					if(!GameFlags.is("goto-portal")){
 						State.setCurrentState(0);
 					}else{

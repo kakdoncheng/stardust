@@ -38,6 +38,8 @@ public class MissileCommandState extends StardustState{
 	private boolean click;
 	private boolean tagged;
 	private boolean bgmClear;
+	private boolean siren;
+	private double sirenT;
 	private int warheads;
 	private double delay;
 	private double delayw;
@@ -62,9 +64,11 @@ public class MissileCommandState extends StardustState{
 		
 		click=true;
 		bgmClear=false;
+		sirenT=2;
+		siren=false;
 		tagged=false;
 		warheads=40;
-		delayw=0;
+		delayw=4;
 		delayl=5;
 		
 		dis=String.format("0.%05d", warheads).toCharArray();
@@ -110,13 +114,8 @@ public class MissileCommandState extends StardustState{
 			return;
 		}
 		if(bgmClear) {
-			double rnd=game.$prng().$double(0, 1);
-			if(rnd<0.5) {
-				Audio.queueBackgroundMusic("arcade-171561/intro-1");
-			} else {
-				Audio.queueBackgroundMusic("arcade-171561/intro-2");
-			}
-			Audio.queueBackgroundMusic("arcade-171561/loop");
+			Audio.queueBackgroundMusic("night-city-knight-127028/intro");
+			Audio.queueBackgroundMusic("night-city-knight-127028/loop");
 			bgmClear=false;
 		}
 		
@@ -135,6 +134,14 @@ public class MissileCommandState extends StardustState{
 		if(delayl<=2){
 			delayl=2;
 		}
+
+		// siren sfx
+		sirenT-=dt;
+		if(!siren && sirenT<=0) {
+			siren=true;
+			Audio.playSoundEffect("air-raid-siren", 1, 1);
+		}
+
 		if(Warhead.isFF()){
 			if(delayw<=0){
 				if(warheads>0){

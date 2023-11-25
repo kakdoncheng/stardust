@@ -146,7 +146,7 @@ public class Ceraphim extends StardustEntity{
 	private int halor=40;
 	private double speed=90;
 	private double attackt=0;
-	private double attackd=3;
+	private double attackd=1;
 	private double deathT=0, expT=0, tt=0;
 	public int $health(){
 		return health;

@@ -8,6 +8,7 @@ import engine.State;
 import engine.Vector;
 import engine.entities.Point;
 import engine.gfx.Camera;
+import engine.sfx.Audio;
 import stardust.StardustGame;
 import stardust.entities.AntiMatterExplosion;
 import stardust.entities.Asteroid;
@@ -42,6 +43,10 @@ public class SinistarState extends StardustState{
 	private double delay;
 
 	public void reset(){
+		Audio.clearBackgroundMusicQueue();
+		Audio.clearBackgroundMusic();
+		Audio.queueBackgroundMusic("moondeity-x-phonk-killer-megalomania/intro");
+		Audio.queueBackgroundMusic("moondeity-x-phonk-killer-megalomania/loop-1");
 		GameFlags.setFlag("warp", 1);
 		clearBackgroundText();
 		targetable.clear();
@@ -166,6 +171,8 @@ public class SinistarState extends StardustState{
 		// check end condition
 		if(spawned>0){
 			if((boss!=null && boss.$health()<1) || !player.isActive()){
+				Audio.clearBackgroundMusicQueue();
+				Audio.clearBackgroundMusic();
 				delay-=dt;
 				if(!player.isActive()){
 					game.flashRedBorder();

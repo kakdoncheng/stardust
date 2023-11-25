@@ -20,6 +20,7 @@ import stardust.gfx.CharGraphics;
 import engine.GameFlags;
 import engine.State;
 import engine.gfx.Camera;
+import engine.sfx.Audio;
 
 public class DemonstarState extends StardustState{
 
@@ -33,6 +34,7 @@ public class DemonstarState extends StardustState{
 	private double spawnt;
 	private double delay;
 	private boolean tagged;
+	private boolean bgmClear;
 	
 	// entities
 	private StardustEntity player;
@@ -49,6 +51,7 @@ public class DemonstarState extends StardustState{
 		bgT=0;
 		delay=1;
 		tagged=false;
+		bgmClear=false;
 		
 		spawnt=20;
 		hostiles=new ArrayList<StardustEntity>();
@@ -61,9 +64,20 @@ public class DemonstarState extends StardustState{
 	public void update(double dt) {
 		if(bgT<0.5){
 			bgT+=dt;
+			if(!bgmClear) {
+				// dynamically load music here?
+				Audio.clearBackgroundMusicQueue();
+				Audio.clearBackgroundMusic();
+				bgmClear=true;
+			}
 			updateBackgroundText();
 			game.hideStardust();
 			return;
+		}
+		if(bgmClear) {
+			Audio.queueBackgroundMusic("background-trap-154361/intro");
+			Audio.queueBackgroundMusic("background-trap-154361/loop");
+			bgmClear=false;
 		}
 		
 		// move camera
@@ -160,6 +174,9 @@ public class DemonstarState extends StardustState{
 					game.$currentState().addEntity(new Explosion(game,e.$x(),e.$y(),(int)e.$r()));
 				}
 				game.$currentState().addEntity(new ElectromagneticPulse(game,lx,ly));
+			} else {
+				Audio.clearBackgroundMusicQueue();
+				Audio.clearBackgroundMusic();
 			}
 			game.flashRedBorder();
 			delay-=dt;

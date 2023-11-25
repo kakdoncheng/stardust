@@ -57,14 +57,14 @@ public class Audio {
 					String bgmk=popQueue();
 					bgm[bgmi]=new AudioSource(data.get(bgmk), 1*BGM_VOLUME_MULTIPLIER);
 					bgm[bgmi].play();
-					System.out.println("engine.sfx.Audio: start: "+bgmk+" "+bgm[bgmi].isPlaying());
+					//System.out.println("engine.sfx.Audio: start: "+bgmk+" "+bgm[bgmi].isPlaying());
 				}
 				// if opposite index null, pop queue
 				if(bgmq.size()>0) {
 					if(bgm[nexti]==null) {
 						String bgmk=popQueue();
 						bgm[nexti]=new AudioSource(data.get(bgmk), 1*BGM_VOLUME_MULTIPLIER);
-						System.out.println("engine.sfx.Audio: queueing: "+bgmk+" "+bgm[nexti].isPlaying());
+						//System.out.println("engine.sfx.Audio: queueing: "+bgmk+" "+bgm[nexti].isPlaying());
 					}
 				}
 			}
@@ -76,7 +76,7 @@ public class Audio {
 					bgm[bgmi].destroy();
 					bgm[bgmi]=null;
 					bgmi=nexti;
-					System.out.println("engine.sfx.Audio: swap: "+bgm[bgmi]);
+					//System.out.println("engine.sfx.Audio: swap: "+bgm[bgmi]);
 				}
 				// finally play current index
 				bgm[bgmi].play();
@@ -86,6 +86,14 @@ public class Audio {
 		}
 		
 		// handle queue
+		public synchronized boolean isClear() {
+			for(int i=0; i<bgm.length; i++) {
+				if(bgm[i]!=null) {
+					return false;
+				}
+			}
+			return true;
+		}
 		public synchronized void addToQueue(String key){
 			bgmq.add(key);
 		}
@@ -188,6 +196,9 @@ public class Audio {
 	}
 	
 	// background music
+	public static boolean isBackgroundMusicQueueEmpty() {
+		return bgmt.isClear();
+	}
 	public static void enableBackgroundMusic(boolean yes) {
 		bgmEnabled=yes;
 	}

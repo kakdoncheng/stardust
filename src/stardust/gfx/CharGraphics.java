@@ -59,7 +59,7 @@ public class CharGraphics {
 		BufferedImage img=TextureLoader.newTransparentImage(16, 16);
 		Graphics g=img.createGraphics();
 		g.setFont(new Font("Unifont", Font.PLAIN, 16));
-		g.setColor(new Color(25,25,25));
+		g.setColor(new Color(0, 128, 0));
 		g.drawString(c+"", 0, 14);
 		g.dispose();
 		//System.out.println(c+" "+img);

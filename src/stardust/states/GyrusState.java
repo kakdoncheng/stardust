@@ -85,8 +85,6 @@ public class GyrusState extends StardustState{
 			return;
 		}
 		if(bgmClear) {
-			// if statement below is deprecated by
-			//this.playRandomBGMSequence();
 			Audio.queueBackgroundMusic("retro-synthwave-short-version-176294/loop");
 			bgmClear=false;
 		}

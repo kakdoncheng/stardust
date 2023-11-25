@@ -107,21 +107,22 @@ public class EndlessState extends StardustState{
 		voyager=null;
 		voyagerdt=12;
 		
-		// bgm
-		if(game.$stage()<1) {
-			Audio.clearBackgroundMusicQueue();
-			Audio.queueBackgroundMusic("lifelike-126735/loop-1");
-			Audio.queueBackgroundMusic("lifelike-126735/loop-1");
-			Audio.queueBackgroundMusic("lifelike-126735/loop-2");
-		}else if(game.$stage()<5) {
-			// do nothing
-		}else if(game.$stage()<9) {
-			Audio.clearBackgroundMusicQueue();
-			Audio.clearBackgroundMusic();
-			Audio.queueBackgroundMusic("escape-151399/intro");
-			Audio.queueBackgroundMusic("escape-151399/loop-1");
-			Audio.queueBackgroundMusic("escape-151399/loop-1");
-			Audio.queueBackgroundMusic("escape-151399/loop-2");
+		// fallback to default bgm if no music detected
+		if(Audio.isBackgroundMusicQueueEmpty()) {
+			if(game.$stage()<6) {
+				double rnd=game.$prng().$double(0, 1);
+				if(rnd<0.5) {
+					Audio.queueBackgroundMusic("arcade-171561/intro-1");
+					Audio.queueBackgroundMusic("arcade-171561/loop");
+				} else {
+					Audio.queueBackgroundMusic("arcade-171561/intro-2");
+					Audio.queueBackgroundMusic("arcade-171561/loop");
+				}
+			} else {
+				Audio.queueBackgroundMusic("escape-151399/intro");
+				Audio.queueBackgroundMusic("escape-151399/loop-all");
+			}
+			
 		}
 		
 		if(GameFlags.is("success")){

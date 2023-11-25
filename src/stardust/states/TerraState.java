@@ -95,6 +95,7 @@ public class TerraState extends StardustState{
 		if(bgmClear) {
 			// if statement below is deprecated by
 			//this.playRandomBGMSequence();
+			Audio.queueBackgroundMusic("80s-synth-wave-110473/loop-lo");
 			double bgmi=game.$prng().$double(0, 1);
 			if(bgmi<0.333) {
 				Audio.queueBackgroundMusic("80s-synth-wave-110473/loop-1");

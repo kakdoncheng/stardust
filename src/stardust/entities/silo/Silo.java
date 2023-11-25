@@ -90,7 +90,7 @@ public class Silo extends StardustEntity{
 		//this.renderCollisionBounds(c, 8);
 		if(dwt%1>0.5){
 			if(isEmpty()){
-				CharGraphics.drawRedHeaderString("EMPTY", (int)c.$cx(x)-45, (int)c.$cy(y+20), 1f);
+				CharGraphics.drawRedHeaderString("OUT", (int)c.$cx(x)-27, (int)c.$cy(y+20), 1f);
 			}else if(ammo<4){
 				CharGraphics.drawRedHeaderString("LOW", (int)c.$cx(x)-27, (int)c.$cy(y+20), 1f);
 			}

@@ -70,20 +70,8 @@ public class CeraphimState extends StardustState{
 			return;
 		}
 		if(bgmClear) {
-			// if statement below is deprecated by
-			//this.playRandomBGMSequence();
-			double bgmi=game.$prng().$double(0, 1);
-			if(bgmi<0.2) {
-				Audio.queueBackgroundMusic("night-city-knight-127028/2-loop-2");
-			}else if(bgmi<0.4) {
-				Audio.queueBackgroundMusic("night-city-knight-127028/4-loop-2");
-			}else if(bgmi<0.6) {
-				Audio.queueBackgroundMusic("night-city-knight-127028/3-intro");
-			}else if(bgmi<0.8) {
-				Audio.queueBackgroundMusic("night-city-knight-127028/4-loop-1");
-			}else {
-				Audio.queueBackgroundMusic("night-city-knight-127028/4-loop-3");
-			}
+			Audio.queueBackgroundMusic("moondeity-x-phonk-killer-death-dagger/intro");
+			Audio.queueBackgroundMusic("moondeity-x-phonk-killer-death-dagger/loop");
 			bgmClear=false;
 		}
 		

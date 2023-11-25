@@ -10,6 +10,7 @@ import stardust.gfx.CharGraphics;
 import engine.GameFlags;
 import engine.State;
 import engine.gfx.Camera;
+import engine.sfx.Audio;
 
 public class DemonstarBossState extends StardustState{
 
@@ -61,6 +62,8 @@ public class DemonstarBossState extends StardustState{
 		if((boss!=null && boss.$health()<1) || !player.isActive()){
 			delay-=dt;
 			if(!player.isActive()){
+				Audio.clearBackgroundMusicQueue();
+				Audio.clearBackgroundMusic();
 				game.flashRedBorder();
 				if(delay>1){
 					delay=1;
@@ -68,6 +71,8 @@ public class DemonstarBossState extends StardustState{
 			}
 			if(delay<=0){
 				if(player.isActive()){
+					Audio.clearBackgroundMusicQueue();
+					Audio.clearBackgroundMusic();
 					GameFlags.markFlag("demonstar");
 					GameFlags.setFlag("success", 1);
 					GameFlags.setFlag("player-x", (int)player.$x());

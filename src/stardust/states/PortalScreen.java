@@ -27,7 +27,21 @@ public class PortalScreen extends StardustState{
 	private StardustEntity player;
 	
 	public void reset() {
-		Audio.queueBackgroundMusic("lifelike-126735/begin");
+		Audio.clearBackgroundMusicQueue();
+		Audio.clearBackgroundMusic();
+		double rnd=game.$prng().$double(0, 1);
+		if(rnd<0.4) {
+			Audio.queueBackgroundMusic("lifelike-126735/begin");
+			Audio.queueBackgroundMusic("lifelike-126735/loop-1");
+			Audio.queueBackgroundMusic("lifelike-126735/loop-1");
+			Audio.queueBackgroundMusic("lifelike-126735/loop-2");
+		} else if(rnd<0.7) {
+			Audio.queueBackgroundMusic("password-infinity-123276/loop-3-lo");
+			Audio.queueBackgroundMusic("password-infinity-123276/loop-2");
+		} else {
+			Audio.queueBackgroundMusic("password-infinity-123276/intro");
+			Audio.queueBackgroundMusic("password-infinity-123276/loop-1");
+		}
 		
 		GameFlags.setFlag("begin", 0);
 		GameFlags.setFlag("warp", 0);
@@ -84,10 +98,12 @@ public class PortalScreen extends StardustState{
 				(-game.$displayWidth()/2)+36,
 				(+game.$displayHeight()/2)-48,
 				1f);
+		/*
 		CharGraphics.drawStringD(StardustGame.version, //Звездна�?.Пыль звездна�?.пыль
 				(game.$displayWidth()/2)-(9*StardustGame.version.length()),
 				(game.$displayHeight()/2)-18,
 				1f);
+		//*/
 		if(Keyboard.isKeyDown(Keyboard.KEY_TAB) || ft%1>=0.5){
 			CharGraphics.drawHeaderString(ft>0?game.$hiscore()+"!":game.$hiscore(), //"ЛР лр"ft>0?game.$hiscore()+" новый!":
 					(-game.$displayWidth()/2)+18,
