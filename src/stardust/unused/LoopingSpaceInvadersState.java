@@ -35,8 +35,8 @@ public class LoopingSpaceInvadersState extends StardustState{
 	public void reset() {
 		GameFlags.setFlag("warp", 1);
 		clearBackgroundText();
-		ec.clear();
-		ec.setRenderDistance(StardustGame.BOUNDS);
+		targetable.clear();
+		targetable.setRenderDistance(StardustGame.BOUNDS);
 		game.$camera().hardCenterOnPoint(0, 0);
 		bgT=0;
 		
@@ -55,8 +55,8 @@ public class LoopingSpaceInvadersState extends StardustState{
 		rc.lockOnEntity(player);
 		swarm.setTarget(player);
 		
-		ec.addEntity(player);
-		ec.addEntity(swarm);
+		targetable.addEntity(player);
+		targetable.addEntity(swarm);
 	}
 
 	public void update(double dt) {
@@ -81,18 +81,18 @@ public class LoopingSpaceInvadersState extends StardustState{
 				
 				ufodt=game.$prng().$double(1, 4);
 				ufo.setTarget(player);
-				ec.addEntity(ufo);
+				targetable.addEntity(ufo);
 			}
 		}
 		
-		ec.update(dt);
+		targetable.update(dt);
 		if(rc.isActive()){
 			rc.update(dt);
 		}
 		
 		// tag last alien
 		if(swarm.$lastAlien()!=null&&!tagged){
-			ec.addEntity(new IndicatorDestroy(game, swarm.$lastAlien()));
+			targetable.addEntity(new IndicatorDestroy(game, swarm.$lastAlien()));
 			tagged=true;
 		}
 		
@@ -124,7 +124,7 @@ public class LoopingSpaceInvadersState extends StardustState{
 			return;
 		}
 		
-		ec.render(c);
+		targetable.render(c);
 		if(rc.isActive()){
 			rc.render(c);
 		}

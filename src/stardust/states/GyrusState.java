@@ -18,6 +18,7 @@ import engine.GameFlags;
 import engine.State;
 import engine.Vector;
 import engine.gfx.Camera;
+import engine.sfx.Audio;
 
 public class GyrusState extends StardustState{
 
@@ -33,6 +34,7 @@ public class GyrusState extends StardustState{
 	private boolean tagged;
 	private int kills;
 	private char[] dis;
+	private boolean bgmClear;
 	
 	// entities
 	private RadarScan rc;
@@ -41,29 +43,30 @@ public class GyrusState extends StardustState{
 	public void reset() {
 		GameFlags.setFlag("warp", 1);
 		clearBackgroundText();
-		ec.clear();
-		ec.setRenderDistance(StardustGame.BOUNDS);
-		sparks.clear();
-		sparks.setRenderDistance(StardustGame.BOUNDS);
+		targetable.clear();
+		targetable.setRenderDistance(StardustGame.BOUNDS);
+		particles.clear();
+		particles.setRenderDistance(StardustGame.BOUNDS);
 		game.$camera().hardCenterOnPoint(0, 0);
 		bgT=0;
 		delay=1;
 		tt=0;
 		kills=0;
 		tagged=false;
+		bgmClear=false;
 		
 		dis=String.format("0.%05d", kills).toCharArray();
 		
 		rc=new RadarScan(game, 0, 0);
 		player=new GyrusPlayerSpaceship(game);
 
-		ec.addEntity(player);
+		targetable.addEntity(player);
 		//ec.addEntity(new ElectromagneticPulse(game,0,0));
 		for(int i=0;i<64;i++){
-			ec.addEntity(new GyrusStardust(game, game.$prng().$double(1, 20)));
+			targetable.addEntity(new GyrusStardust(game, game.$prng().$double(1, 20)));
 		}
 		for(int i=0;i<128;i++){
-			ec.addEntity(new GyrusStardust(game, game.$prng().$double(1, 160)));
+			targetable.addEntity(new GyrusStardust(game, game.$prng().$double(1, 160)));
 		}
 	}
 
@@ -71,8 +74,19 @@ public class GyrusState extends StardustState{
 		game.hideStardust();
 		if(bgT<0.5){
 			bgT+=dt;
+			if(!bgmClear) {
+				// dynamically load music here?
+				Audio.clearBackgroundMusicQueue();
+				Audio.clearBackgroundMusic();
+				bgmClear=true;
+			}
+			
 			updateBackgroundText();
 			return;
+		}
+		if(bgmClear) {
+			Audio.queueBackgroundMusic("retro-synthwave-short-version-176294/loop");
+			bgmClear=false;
 		}
 		
 		tt+=4*Math.PI*dt;
@@ -80,25 +94,25 @@ public class GyrusState extends StardustState{
 		
 		// spawn stardust
 		if(game.$prng().$double(0, 1)<0.8){
-			ec.addEntity(new GyrusStardust(game));
+			targetable.addEntity(new GyrusStardust(game));
 		}
 		
 		// spawn hostiles
 		if(kills<20){
 			if(game.$prng().$double(0, 1)<0.05){
-				ec.addEntity(new GyrusAsteroid(game));
+				targetable.addEntity(new GyrusAsteroid(game));
 			}
 			if(game.$prng().$double(0, 1)<0.025){
-				ec.addEntity(new GyrusFighter(game));
+				targetable.addEntity(new GyrusFighter(game));
 			}
 			//if(game.$prng().$double(0, 1)<0.01){
 			//	ec.addEntity(new GyrusBogey(game));
 			//}
 		}else{
 			if(!tagged){
-				for(StardustEntity e:ec.$entities()){
+				for(StardustEntity e:targetable.$entities()){
 					if(e instanceof GradiusShip){
-						ec.addEntity(new IndicatorDestroy(game, e));
+						targetable.addEntity(new IndicatorDestroy(game, e));
 					}
 				}
 				tagged=true;
@@ -109,7 +123,7 @@ public class GyrusState extends StardustState{
 		// get xy of last enemy removed
 		double lx=0;
 		double ly=0;
-		for(StardustEntity e:ec.$lastRemovedEntities()){
+		for(StardustEntity e:targetable.$lastRemovedEntities()){
 			if(!(e instanceof GyrusShip)){
 				continue;
 			}
@@ -136,6 +150,9 @@ public class GyrusState extends StardustState{
 				State.setCurrentState(0);
 				game.$currentState().reset();
 				game.$currentState().addEntity(new ElectromagneticPulse(game,lx,ly));
+			} else {
+				Audio.clearBackgroundMusicQueue();
+				Audio.clearBackgroundMusic();
 			}
 			game.flashRedBorder();
 			delay-=dt;
@@ -149,8 +166,8 @@ public class GyrusState extends StardustState{
 			}
 		}
 		
-		ec.update(dt);
-		sparks.update(dt);
+		targetable.update(dt);
+		particles.update(dt);
 		if(rc.isActive()){
 			rc.update(dt);
 		}
@@ -164,8 +181,8 @@ public class GyrusState extends StardustState{
 			return;
 		}
 		
-		ec.render(c);
-		sparks.render(c);
+		targetable.render(c);
+		particles.render(c);
 		if(rc.isActive()){
 			rc.render(c);
 		}

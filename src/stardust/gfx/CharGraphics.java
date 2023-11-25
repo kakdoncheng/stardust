@@ -59,7 +59,7 @@ public class CharGraphics {
 		BufferedImage img=TextureLoader.newTransparentImage(16, 16);
 		Graphics g=img.createGraphics();
 		g.setFont(new Font("Unifont", Font.PLAIN, 16));
-		g.setColor(new Color(25,25,25));
+		g.setColor(new Color(0, 128, 0));
 		g.drawString(c+"", 0, 14);
 		g.dispose();
 		//System.out.println(c+" "+img);
@@ -122,7 +122,7 @@ public class CharGraphics {
 	//new Font("Lucida Console", Font.BOLD, 16);
 	// !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
 	public static void init(){
-		registerFont("./fonts/unifont-14.0.04.ttf");
+		registerFont("./fonts/unifont-15.1.04.otf");
 		map=new HashMap<Character, Texture>();
 		for(char c:alphabet.toCharArray()){
 			loadCharTexture(c);

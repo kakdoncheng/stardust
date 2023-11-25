@@ -47,7 +47,7 @@ import engine.sfx.Audio;
 public class StardustGame extends Game{
 	
 	public static final String credits="Game Design, Programming, & Art: Linh-Han Van 01.01.2022";
-	public static final String version="v0.1.0+20221119";
+	public static final String version="v0.2.1+20221124";
 	
 	public StardustGame() {
 		super(0, 0, "Stardust");
@@ -62,9 +62,7 @@ public class StardustGame extends Game{
 	}
 
 	public void init(){
-		setResolution(1920, 1080);
-		//setResolution(1366, 768);
-		
+
 		GameFlags.init();
 		GameFlags.addFlag("debug");
 		GameFlags.addFlag("debuginv");
@@ -98,11 +96,14 @@ public class StardustGame extends Game{
 		//GameFlags.markFlag("debugfps");
 		GameFlags.markFlag("score");
 		
+		// naive bloom
 		GameFlags.setFlag("enable-altbloom", 1);
 		//GameFlags.setFlag("enable-bloom", 1);
 		GameFlags.setFlag("bloom-intensity", 3);
 		//GameFlags.setFlag("debug-showhitbox", 1);
-		GameFlags.setFlag("debug-altwavload", 1);
+		
+		// deprecated, will always load audio from disk
+		//GameFlags.setFlag("debug-altwavload", 1);
 		
 		// sfx
 		Audio.initAL();
@@ -126,11 +127,73 @@ public class StardustGame extends Game{
 		Audio.loadWavData("explosion-emp", 1, 1);
 		Audio.loadWavData("scream-0", 1, 1);
 		Audio.loadWavData("scream-1", 1, 1);
+		Audio.loadWavData("air-raid-siren", 1, 1);
 		Audio.loadWavData("blip", 1, 1);
 		Audio.loadWavData("pongf4", 1, 1);
 		Audio.loadWavData("pongf5", 1, 1);
+		Audio.loadWavData("invaders-a", 1, 32);
+		Audio.loadWavData("invaders-b", 1, 32);
+		Audio.loadWavData("invaders-c", 1, 32);
+		Audio.loadWavData("invaders-d", 1, 32);
+		
+		// bgm
+		// might need to dynamically load?
+		Audio.loadWavData("80s-synth-wave-110473/loop-1", 1, 1);
+		Audio.loadWavData("80s-synth-wave-110473/loop-2", 1, 1);
+		Audio.loadWavData("80s-synth-wave-110473/loop-3", 1, 1);
+		Audio.loadWavData("80s-synth-wave-110473/loop-lo-a", 1, 1);
+		Audio.loadWavData("80s-synth-wave-110473/loop-lo-b", 1, 1);
+		Audio.loadWavData("80s-synth-wave-110473/loop-lo", 1, 1);
+		Audio.loadWavData("arcade-171561/intro-1", 1, 1);
+		Audio.loadWavData("arcade-171561/intro-2", 1, 1);
+		Audio.loadWavData("arcade-171561/loop", 1, 1);
+		Audio.loadWavData("background-trap-154361/intro", 1, 1);
+		Audio.loadWavData("background-trap-154361/loop", 1, 1);
+		Audio.loadWavData("escape-151399/intro", 1, 1);
+		Audio.loadWavData("escape-151399/loop-1", 1, 1);
+		Audio.loadWavData("escape-151399/loop-2", 1, 1);
+		Audio.loadWavData("escape-151399/loop-all", 1, 1);
+		Audio.loadWavData("hero-80s-127027/intro", 1, 1);
+		Audio.loadWavData("hero-80s-127027/loop-a", 1, 1);
+		Audio.loadWavData("lifelike-126735/begin", 1, 1);
+		Audio.loadWavData("lifelike-126735/loop-1", 1, 1);
+		Audio.loadWavData("lifelike-126735/loop-2", 1, 1);
+		Audio.loadWavData("lifelike-126735/loop-3", 1, 1);
+		Audio.loadWavData("night-city-knight-127028/1-intro", 1, 1);
+		Audio.loadWavData("night-city-knight-127028/2-intro", 1, 1);
+		Audio.loadWavData("night-city-knight-127028/2-loop-1", 1, 1);
+		Audio.loadWavData("night-city-knight-127028/2-loop-2", 1, 1);
+		Audio.loadWavData("night-city-knight-127028/3-intro", 1, 1);
+		Audio.loadWavData("night-city-knight-127028/3-loop-lo", 1, 1);
+		Audio.loadWavData("night-city-knight-127028/4-intro-lo", 1, 1);
+		Audio.loadWavData("night-city-knight-127028/4-loop-1", 1, 1);
+		Audio.loadWavData("night-city-knight-127028/4-loop-2", 1, 1);
+		Audio.loadWavData("night-city-knight-127028/4-loop-3", 1, 1);
+		Audio.loadWavData("night-city-knight-127028/intro", 1, 1);
+		Audio.loadWavData("night-city-knight-127028/loop", 1, 1);
+		Audio.loadWavData("password-infinity-123276/intro", 1, 1);
+		Audio.loadWavData("password-infinity-123276/loop-1", 1, 1);
+		Audio.loadWavData("password-infinity-123276/loop-2", 1, 1);
+		Audio.loadWavData("password-infinity-123276/loop-3-lo", 1, 1);
+		Audio.loadWavData("retro-synthwave-short-version-176294/loop", 1, 1);
+		Audio.loadWavData("smoothy-157149/loop", 1, 1);
+		Audio.loadWavData("synthwave-background-music-155701/intro-1", 1, 1);
+		Audio.loadWavData("synthwave-background-music-155701/intro-2", 1, 1);
+		Audio.loadWavData("synthwave-background-music-155701/loop", 1, 1);
+		
+		Audio.loadWavData("moondeity-x-phonk-killer-death-dagger/intro", 1, 1);
+		Audio.loadWavData("moondeity-x-phonk-killer-death-dagger/loop", 1, 1);
+		//Audio.loadWavData("moondeity-x-phonk-killer-electric-shock/intro", 1, 1);
+		//Audio.loadWavData("moondeity-x-phonk-killer-electric-shock/loop", 1, 1);
+		Audio.loadWavData("moondeity-x-phonk-killer-megalomania/intro", 1, 1);
+		Audio.loadWavData("moondeity-x-phonk-killer-megalomania/loop-1", 1, 1);
+		//Audio.loadWavData("mr-tom-spacesynth/intro-a", 1, 1);
+		//Audio.loadWavData("mr-tom-spacesynth/intro-b", 1, 1);
+		//Audio.loadWavData("mr-tom-spacesynth/loop", 1, 1);
 		
 		active=true;
+		setResolution(1920, 1080);
+		//setResolution(1366, 768);
 		setFullscreen(true);
 		setFixedStep(true);
 		//setFPSLimit(30);
@@ -183,6 +246,8 @@ public class StardustGame extends Game{
 		State.addState(27, new HeavyWeaponState(this));
 		State.addState(28, new PongState(this));
 		State.addState(29, new LoopingSpaceInvadersState(this));
+		
+		Audio.enableBackgroundMusic(true);
 		State.setCurrentState(-1);
 		State.$currentState().reset();
 		
@@ -300,11 +365,14 @@ public class StardustGame extends Game{
 	
 	private int histage=0;
 	private int hiscore=0;
+	public int $histage() {
+		return histage;
+	}
 	public String $hiscore(){
 		if(flasht>0){
-			return flasht%0.5>=0.25?String.format("%d.%05d HI",histage,hiscore):"";
+			return flasht%0.5>=0.25?String.format("%d.%05d",histage,hiscore):"";
 		}
-		return String.format("%d.%05d HI",histage,hiscore);
+		return String.format("%d.%05d",histage,hiscore);
 	}
 	
 	private int stage=0;
@@ -366,7 +434,7 @@ public class StardustGame extends Game{
 				bulletTime=1;
 			}
 		}
-		Audio.setPitch(bulletTime);
+		Audio.setSFXPitch(bulletTime);
 		this.setRunSpeed(bulletTime);
 		
 		if(GameFlags.is("debug")){

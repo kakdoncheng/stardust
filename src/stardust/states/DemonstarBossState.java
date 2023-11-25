@@ -10,6 +10,7 @@ import stardust.gfx.CharGraphics;
 import engine.GameFlags;
 import engine.State;
 import engine.gfx.Camera;
+import engine.sfx.Audio;
 
 public class DemonstarBossState extends StardustState{
 
@@ -33,10 +34,10 @@ public class DemonstarBossState extends StardustState{
 	
 	public void reset() {
 		GameFlags.setFlag("warp", 1);
-		ec.clear();
-		ec.setRenderDistance(StardustGame.BOUNDS);
-		sparks.clear();
-		sparks.setRenderDistance(StardustGame.BOUNDS);
+		targetable.clear();
+		targetable.setRenderDistance(StardustGame.BOUNDS);
+		particles.clear();
+		particles.setRenderDistance(StardustGame.BOUNDS);
 		
 		dis="*.*****                  ".toCharArray();
 		timer=0;
@@ -49,11 +50,11 @@ public class DemonstarBossState extends StardustState{
 		boss=null;
 		player=new PlayerSpaceship(game, GameFlags.valueOf("player-x"), GameFlags.valueOf("player-y"));
 		player.stopInvt();
-		ec.addEntity(player);
+		targetable.addEntity(player);
 		
 		double dty=24+game.$topScreenEdge();
 		StardustEntity e=new IndicatorDangerUp(game,0,dty);
-		ec.addEntity(e);
+		targetable.addEntity(e);
 	}
 
 	public void update(double dt) {
@@ -61,6 +62,8 @@ public class DemonstarBossState extends StardustState{
 		if((boss!=null && boss.$health()<1) || !player.isActive()){
 			delay-=dt;
 			if(!player.isActive()){
+				Audio.clearBackgroundMusicQueue();
+				Audio.clearBackgroundMusic();
 				game.flashRedBorder();
 				if(delay>1){
 					delay=1;
@@ -68,6 +71,8 @@ public class DemonstarBossState extends StardustState{
 			}
 			if(delay<=0){
 				if(player.isActive()){
+					Audio.clearBackgroundMusicQueue();
+					Audio.clearBackgroundMusic();
 					GameFlags.markFlag("demonstar");
 					GameFlags.setFlag("success", 1);
 					GameFlags.setFlag("player-x", (int)player.$x());
@@ -92,7 +97,7 @@ public class DemonstarBossState extends StardustState{
 			// move camera
 			double dcy=-180*dt;
 			game.$camera().dxy(0, dcy);
-			for(StardustEntity e:ec.$entities()){
+			for(StardustEntity e:targetable.$entities()){
 				e.setXY(e.$x(), e.$y()+dcy);
 			}
 		}
@@ -113,7 +118,7 @@ public class DemonstarBossState extends StardustState{
 		if(bossT>6&&spawned<1){
 			boss=new Demonstar(game,0,game.$topScreenEdge()-48);
 			boss.setTarget(player);
-			ec.addEntity(boss);
+			targetable.addEntity(boss);
 			//ec.addEntity(new FlashingDestroyIndicator(game, boss, true));
 			//StardustEntity pulse=new ElectromagneticPulse(game,boss.$x(),boss.$y());
 			//ec.addEntity(pulse);
@@ -123,14 +128,14 @@ public class DemonstarBossState extends StardustState{
 		// set new state/reset
 		// see ceraphim state for reference
 		
-		ec.update(dt);
-		sparks.update(dt);
+		targetable.update(dt);
+		particles.update(dt);
 	}
 
 	public void render(Camera c) {
 		
-		ec.render(c);
-		sparks.render(c);
+		targetable.render(c);
+		particles.render(c);
 		
 		if(GameFlags.is("score")){
 			String s="";

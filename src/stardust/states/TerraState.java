@@ -17,6 +17,7 @@ import engine.GameFlags;
 import engine.State;
 import engine.Vector;
 import engine.gfx.Camera;
+import engine.sfx.Audio;
 
 public class TerraState extends StardustState{
 
@@ -35,14 +36,15 @@ public class TerraState extends StardustState{
 	private double bgT;
 	private double delay;
 	private boolean tagged;
+	private boolean bgmClear;
 
 	public void reset() {
 		GameFlags.setFlag("warp", 1);
 		clearBackgroundText();
-		ec.clear();
-		ec.setRenderDistance(StardustGame.BOUNDS);
-		sparks.clear();
-		sparks.setRenderDistance(StardustGame.BOUNDS);
+		targetable.clear();
+		targetable.setRenderDistance(StardustGame.BOUNDS);
+		particles.clear();
+		particles.setRenderDistance(StardustGame.BOUNDS);
 		game.$camera().hardCenterOnPoint(0, 0);
 		mt=0;
 		wavet=16;
@@ -50,14 +52,15 @@ public class TerraState extends StardustState{
 		bgT=0;
 		delay=1;
 		tagged=false;
+		bgmClear=false;
 		
 		hostiles=new ArrayList<StardustEntity>();
 		
 		player=new PlayerOrbitalDrone(game, 0, 0, 55);
 		planet=new Terra(game, 0, 0);
-		ec.addEntity(player);
-		ec.addEntity(planet);
-		ec.addEntity(new IndicatorDefend(game, planet, true));
+		targetable.addEntity(player);
+		targetable.addEntity(planet);
+		targetable.addEntity(new IndicatorDefend(game, planet, true));
 	}
 
 	private void spawnMine(int dist){
@@ -66,22 +69,44 @@ public class TerraState extends StardustState{
 		double yy=Vector.vectorToDy(tt, dist);
 		StardustEntity e=new ReplicatingMine(game, xx, yy, Vector.directionFromTo(xx, yy, planet.$x(), planet.$y()));
 		hostiles.add(e);
-		ec.addEntity(e);
+		targetable.addEntity(e);
 	}
 	private void spawnShip(int dist){
 		double tt=game.$prng().$double(0, 2*Math.PI);
 		double xx=Vector.vectorToDx(tt, dist);
 		double yy=Vector.vectorToDy(tt, dist);
-		ec.addEntity(new Frigate(game, xx, yy, Vector.directionFromTo(xx, yy, planet.$x(), planet.$y())));
+		targetable.addEntity(new Frigate(game, xx, yy, Vector.directionFromTo(xx, yy, planet.$x(), planet.$y())));
 	}
 	
 	public void update(double dt) {
 		if(bgT<0.5){
 			bgT+=dt;
+			if(!bgmClear) {
+				// dynamically load music here?
+				Audio.clearBackgroundMusicQueue();
+				Audio.clearBackgroundMusic();
+				bgmClear=true;
+			}
+			
 			updateBackgroundText();
 			game.hideStardust();
 			return;
 		}
+		if(bgmClear) {
+			// if statement below is deprecated by
+			//this.playRandomBGMSequence();
+			Audio.queueBackgroundMusic("80s-synth-wave-110473/loop-lo");
+			double bgmi=game.$prng().$double(0, 1);
+			if(bgmi<0.333) {
+				Audio.queueBackgroundMusic("80s-synth-wave-110473/loop-1");
+			}else if(bgmi<0.666) {
+				Audio.queueBackgroundMusic("80s-synth-wave-110473/loop-2");
+			}else{
+				Audio.queueBackgroundMusic("80s-synth-wave-110473/loop-3");
+			}
+			bgmClear=false;
+		}
+		
 		mt-=dt;
 		if(mt<=0 && wavet>0){
 			spawnMine(360);
@@ -101,15 +126,15 @@ public class TerraState extends StardustState{
 		}
 		
 		if(wavet<-0.25 && !tagged){
-			for(StardustEntity e:ec.$entities()){
+			for(StardustEntity e:targetable.$entities()){
 				if(e instanceof ReplicatingMine){
-					ec.addEntity(new IndicatorDestroy(game, e));
+					targetable.addEntity(new IndicatorDestroy(game, e));
 				}
 			}
 			tagged=true;
 		}
-		ec.update(dt);
-		sparks.update(dt);
+		targetable.update(dt);
+		particles.update(dt);
 		
 		// get xy of last enemy removed
 		double lx=0;
@@ -137,6 +162,9 @@ public class TerraState extends StardustState{
 				State.setCurrentState(0);
 				game.$currentState().reset();
 				game.$currentState().addEntity(new ElectromagneticPulse(game,lx,ly));
+			} else {
+				Audio.clearBackgroundMusicQueue();
+				Audio.clearBackgroundMusic();
 			}
 			game.flashRedBorder();
 			delay-=dt;
@@ -158,8 +186,8 @@ public class TerraState extends StardustState{
 			}
 			return;
 		}
-		ec.render(c);
-		sparks.render(c);
+		targetable.render(c);
+		particles.render(c);
 		
 		if(GameFlags.is("score")){
 			CharGraphics.drawHeaderString(game.$obfScore(),

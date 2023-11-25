@@ -4,9 +4,10 @@ import java.util.ArrayList;
 
 import org.lwjgl.opengl.GL11;
 
+import engine.gfx.Camera;
+import engine.sfx.Audio;
 import stardust.StardustGame;
 import stardust.gfx.VectorGraphics;
-import engine.gfx.Camera;
 
 public class Sigil extends SinisterEntity{
 	
@@ -43,7 +44,7 @@ public class Sigil extends SinisterEntity{
 			if(set){
 				ralpha=1.0;
 				activated=true;
-				//Audio.addSoundEffect("scream-0", 4);
+				Audio.playSoundEffect("scream-0", 4, 1);
 			}
 		}
 		blip();

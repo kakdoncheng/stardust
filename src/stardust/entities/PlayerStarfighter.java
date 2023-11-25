@@ -28,6 +28,10 @@ public class PlayerStarfighter extends StardustEntity{
 	//private double debugpowi=0;
 	//private double debugpowcd=0;
 	
+	public void resetInvTimer() {
+		invt=3;
+	}
+	
 	private boolean isShielded=false;
 	private int shield=0;
 	private int shieldl=1; // shield max

@@ -31,15 +31,15 @@ public class HeavyWeaponState extends StardustState{
 	private ArrayList<StardustEntity> ground;
 
 	public void reset() {
-		ec.clear();
-		ec.setRenderDistance(StardustGame.BOUNDS);
+		targetable.clear();
+		targetable.setRenderDistance(StardustGame.BOUNDS);
 		game.$camera().hardCenterOnPoint(0, 0);
 		bgT=0;
 		
 		rc=new RadarScan(game, 0, 0);
 		player=new PlayerTank(game, 0, 155);
 		rc.lockOnEntity(player);
-		ec.addEntity(player);
+		targetable.addEntity(player);
 		
 		lx=-game.$displayWidth()/2;
 		ly=160;
@@ -55,10 +55,10 @@ public class HeavyWeaponState extends StardustState{
 		//System.out.printf("%.2f %.2f %.2f %.2f\n",lx,ly,nx,ny);
 		StardustEntity e=new TracerLine(game,lx,ly,nx,ny,1);
 		ground.add(e);
-		ec.addEntity(e);
+		targetable.addEntity(e);
 		e=new TracerLine(game,lx,ly2,nx,ny2,0.5);
 		ground.add(e);
-		ec.addEntity(e);
+		targetable.addEntity(e);
 		lx=nx;
 		ly=ny;
 		ly2=ny2;
@@ -77,16 +77,16 @@ public class HeavyWeaponState extends StardustState{
 			double t=game.$prng().$double(Math.PI*0.625, Math.PI*1.325);
 			StardustEntity e=new Fighter(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
 			e.setTarget(player);
-			ec.addEntity(e);
+			targetable.addEntity(e);
 		}
 		if(game.$prng().$double(0, 1)<0.0125){
 			double t=game.$prng().$double(Math.PI*0.625, Math.PI*1.325);
 			StardustEntity e=new Bomber(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
 			e.setTarget(player);
-			ec.addEntity(e);
+			targetable.addEntity(e);
 		}
 		
-		ec.update(dt);
+		targetable.update(dt);
 		rc.update(dt);
 		
 		// update ground
@@ -97,11 +97,11 @@ public class HeavyWeaponState extends StardustState{
 			ground.get(0).deactivate();
 			ground.remove(0);
 		}
-		for(StardustEntity e:ec.$entities()){
+		for(StardustEntity e:targetable.$entities()){
 			if(e instanceof Bomb){
 				if(e.$y()>160){
 					e.deactivate();
-					ec.addEntity(new Explosion(game, e.$x(), e.$y(), (int)(e.$r()*game.$prng().$double(1, 3))));
+					targetable.addEntity(new Explosion(game, e.$x(), e.$y(), (int)(e.$r()*game.$prng().$double(1, 3))));
 				}
 			}
 		}
@@ -126,7 +126,7 @@ public class HeavyWeaponState extends StardustState{
 		GL11.glPopMatrix();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		
-		ec.render(c);
+		targetable.render(c);
 		rc.render(c);
 		
 		VectorGraphics.renderCrosshairCursor();

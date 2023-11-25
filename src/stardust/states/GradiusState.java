@@ -19,6 +19,7 @@ import stardust.gfx.CharGraphics;
 import engine.GameFlags;
 import engine.State;
 import engine.gfx.Camera;
+import engine.sfx.Audio;
 
 public class GradiusState extends StardustState{
 
@@ -32,6 +33,7 @@ public class GradiusState extends StardustState{
 	private double spawnt;
 	private double delay;
 	private boolean tagged;
+	private boolean bgmClear;
 	
 	// entities
 	private StardustEntity player;
@@ -40,35 +42,46 @@ public class GradiusState extends StardustState{
 	public void reset() {
 		GameFlags.setFlag("warp", 1);
 		clearBackgroundText();
-		ec.clear();
-		ec.setRenderDistance(StardustGame.BOUNDS);
-		sparks.clear();
-		sparks.setRenderDistance(StardustGame.BOUNDS);
+		targetable.clear();
+		targetable.setRenderDistance(StardustGame.BOUNDS);
+		particles.clear();
+		particles.setRenderDistance(StardustGame.BOUNDS);
 		game.$camera().hardCenterOnPoint(0, 0);
 		bgT=0;
 		delay=1;
 		tagged=false;
+		bgmClear=false;
 		
 		spawnt=20;
 		hostiles=new ArrayList<StardustEntity>();
 		
 		player=new PlayerSpacecraft(game, 0, 0);
-		ec.addEntity(player);
+		targetable.addEntity(player);
 		GradiusShip.destroyIfOutOfScreenBounds(false);
 	}
 
 	public void update(double dt) {
 		if(bgT<0.5){
 			bgT+=dt;
+			if(!bgmClear) {
+				// dynamically load music here?
+				Audio.clearBackgroundMusicQueue();
+				Audio.clearBackgroundMusic();
+				bgmClear=true;
+			}
 			updateBackgroundText();
 			game.hideStardust();
 			return;
+		}
+		if(bgmClear) {
+			Audio.queueBackgroundMusic("smoothy-157149/loop");
+			bgmClear=false;
 		}
 		
 		// move camera
 		double dcx=180*dt;
 		game.$camera().dxy(dcx, 0);
-		for(StardustEntity e:ec.$entities()){
+		for(StardustEntity e:targetable.$entities()){
 			e.setXY(e.$x()+dcx, e.$y());
 		}
 		
@@ -80,7 +93,7 @@ public class GradiusState extends StardustState{
 				double ty=game.$prng().$double(-140, 140);
 				StardustEntity e=new GradiusFighterTypeE(game,tx,ty);
 				e.setTarget(player);
-				ec.addEntity(e);
+				targetable.addEntity(e);
 				hostiles.add(e);
 			}
 			if(game.$prng().$double(0, 1)<0.02){
@@ -88,29 +101,29 @@ public class GradiusState extends StardustState{
 				double ty=game.$prng().$double(-140, 140);
 				StardustEntity e=new GradiusFighterTypeH(game,tx,ty);
 				e.setTarget(player);
-				ec.addEntity(e);
+				targetable.addEntity(e);
 				hostiles.add(e);
 			}
 			if(game.$prng().$double(0, 1)<0.01){
 				double tx=game.$rightScreenEdge();
 				double ty=game.$prng().$double(-140, 140);
 				StardustEntity e=new GradiusFighterTypeM(game,tx,ty);
-				ec.addEntity(e);
+				targetable.addEntity(e);
 				hostiles.add(e);
 			}
 			if(game.$prng().$double(0, 1)<0.01){
 				double tx=game.$rightScreenEdge()+8;
 				double ty=game.$prng().$double(-140, 140);
 				StardustEntity e=new GradiusDroneSwarm(game,tx,ty);
-				ec.addEntity(e);
+				targetable.addEntity(e);
 				hostiles.add(e);
 			}
 		}else{
 			GradiusShip.destroyIfOutOfScreenBounds(true);
 			if(!tagged){
-				for(StardustEntity e:ec.$entities()){
+				for(StardustEntity e:targetable.$entities()){
 					if(e instanceof GradiusShip){
-						ec.addEntity(new IndicatorDestroy(game, e));
+						targetable.addEntity(new IndicatorDestroy(game, e));
 					}
 				}
 				tagged=true;
@@ -141,7 +154,7 @@ public class GradiusState extends StardustState{
 				GameFlags.setFlag("player-y", (int)player.$y());
 				State.setCurrentState(17);
 				game.$currentState().reset();
-				for(StardustEntity e:ec.$entities()){
+				for(StardustEntity e:targetable.$entities()){
 					if(e.equals(player)){
 						continue;
 					}
@@ -152,6 +165,9 @@ public class GradiusState extends StardustState{
 					game.$currentState().addEntity(new Explosion(game,e.$x(),e.$y(),(int)e.$r()));
 				}
 				game.$currentState().addEntity(new ElectromagneticPulse(game,lx,ly));
+			} else {
+				Audio.clearBackgroundMusicQueue();
+				Audio.clearBackgroundMusic();
 			}
 			game.flashRedBorder();
 			delay-=dt;
@@ -165,8 +181,8 @@ public class GradiusState extends StardustState{
 			}
 		}
 		
-		ec.update(dt);
-		sparks.update(dt);
+		targetable.update(dt);
+		particles.update(dt);
 	}
 
 	public void render(Camera c) {
@@ -177,8 +193,8 @@ public class GradiusState extends StardustState{
 			return;
 		}
 		
-		ec.render(c);
-		sparks.render(c);
+		targetable.render(c);
+		particles.render(c);
 		
 		if(GameFlags.is("score")){
 			CharGraphics.drawHeaderString(game.$obfScore(),

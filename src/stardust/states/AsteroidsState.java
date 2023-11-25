@@ -13,6 +13,7 @@ import engine.GameFlags;
 import engine.State;
 import engine.Vector;
 import engine.gfx.Camera;
+import engine.sfx.Audio;
 
 public class AsteroidsState extends StardustState{
 
@@ -22,6 +23,7 @@ public class AsteroidsState extends StardustState{
 	}
 
 	// internal flags/var
+	private boolean bgmClear;
 	private double delay;
 	private double bogeydt;
 	private double dbogeydt;
@@ -36,14 +38,15 @@ public class AsteroidsState extends StardustState{
 	public void reset() {
 		GameFlags.setFlag("warp", 1);
 		clearBackgroundText();
-		ec.clear();
-		ec.setRenderDistance(StardustGame.BOUNDS);
-		sparks.clear();
-		sparks.setRenderDistance(StardustGame.BOUNDS);
+		targetable.clear();
+		targetable.setRenderDistance(StardustGame.BOUNDS);
+		particles.clear();
+		particles.setRenderDistance(StardustGame.BOUNDS);
 		game.$camera().hardCenterOnPoint(0, 0);
 		bgT=0;
 		delay=1;
 		tagged=false;
+		bgmClear=false;
 		
 		bogey=null;
 		bogeydt=8;
@@ -51,7 +54,7 @@ public class AsteroidsState extends StardustState{
 		dbogeydt=4;
 		
 		player=new ClassicPlayerSpaceship(game, 0, 0);
-		ec.addEntity(player);
+		targetable.addEntity(player);
 		
 		//spawn asteroids
 		int dlim=320;
@@ -61,16 +64,33 @@ public class AsteroidsState extends StardustState{
 					player.$x()+Vector.vectorToDx(t,dlim),
 					player.$y()+Vector.vectorToDy(t,dlim),
 					24);
-			ec.addEntity(de);
+			targetable.addEntity(de);
 		}
 	}
 
 	public void update(double dt) {
 		if(bgT<0.5){
 			bgT+=dt;
+			if(!bgmClear) {
+				// dynamically load music here?
+				Audio.clearBackgroundMusicQueue();
+				Audio.clearBackgroundMusic();
+				bgmClear=true;
+			}
 			updateBackgroundText();
 			game.hideStardust();
 			return;
+		}
+		if(bgmClear) {
+			double rnd=game.$prng().$double(0, 1);
+			if(rnd<0.5) {
+				Audio.queueBackgroundMusic("synthwave-background-music-155701/intro-1");
+				Audio.queueBackgroundMusic("synthwave-background-music-155701/loop");
+			} else {
+				Audio.queueBackgroundMusic("synthwave-background-music-155701/intro-2");
+				Audio.queueBackgroundMusic("synthwave-background-music-155701/loop");
+			}
+			bgmClear=false;
 		}
 		
 		// spawn bogeys
@@ -81,7 +101,7 @@ public class AsteroidsState extends StardustState{
 				dbogey=new DumbBogey(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
 				dbogeydt=game.$prng().$double(4, 16);
 				dbogey.setTarget(player);
-				ec.addEntity(dbogey);
+				targetable.addEntity(dbogey);
 			}
 		}
 		if(bogey==null||!bogey.isActive()){
@@ -91,21 +111,21 @@ public class AsteroidsState extends StardustState{
 				bogey=new Bogey(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
 				bogeydt=game.$prng().$double(8, 32);
 				bogey.setTarget(player);
-				ec.addEntity(bogey);
+				targetable.addEntity(bogey);
 			}
 		}
 		
-		ec.update(dt);
-		sparks.update(dt);
+		targetable.update(dt);
+		particles.update(dt);
 		
 		// tag last asteroid
-		if(ec.$sizeOf(ClassicAsteroid.class)>1 && tagged){
+		if(targetable.$sizeOf(ClassicAsteroid.class)>1 && tagged){
 			tagged=false;
 		}
-		if(ec.$sizeOf(ClassicAsteroid.class)<2 && !tagged){
-			for(StardustEntity e:ec.$entities()){
+		if(targetable.$sizeOf(ClassicAsteroid.class)<2 && !tagged){
+			for(StardustEntity e:targetable.$entities()){
 				if(e instanceof ClassicAsteroid){
-					ec.addEntity(new IndicatorDestroy(game, e));
+					targetable.addEntity(new IndicatorDestroy(game, e));
 				}
 			}
 			tagged=true;
@@ -114,7 +134,7 @@ public class AsteroidsState extends StardustState{
 		// get xy of last asteroid removed
 		double lx=0;
 		double ly=0;
-		for(StardustEntity e:ec.$lastRemovedEntities()){
+		for(StardustEntity e:targetable.$lastRemovedEntities()){
 			if(e instanceof ClassicAsteroid){
 				lx=e.$x();
 				ly=e.$y();
@@ -122,7 +142,7 @@ public class AsteroidsState extends StardustState{
 		}
 		
 		// check end condition
-		if(!player.isActive() || ec.$sizeOf(ClassicAsteroid.class)<1){
+		if(!player.isActive() || targetable.$sizeOf(ClassicAsteroid.class)<1){
 			if(player.isActive()){
 				// win
 				// set game flags player xy & success
@@ -134,6 +154,9 @@ public class AsteroidsState extends StardustState{
 				State.setCurrentState(0);
 				game.$currentState().reset();
 				game.$currentState().addEntity(new ElectromagneticPulse(game,lx,ly));
+			} else {
+				Audio.clearBackgroundMusicQueue();
+				Audio.clearBackgroundMusic();
 			}
 			game.flashRedBorder();
 			delay-=dt;
@@ -156,8 +179,8 @@ public class AsteroidsState extends StardustState{
 			return;
 		}
 		
-		ec.render(c);
-		sparks.render(c);
+		targetable.render(c);
+		particles.render(c);
 		
 		if(GameFlags.is("score")){
 			CharGraphics.drawHeaderString(game.$obfScore(),

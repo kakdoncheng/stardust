@@ -1,6 +1,7 @@
 package stardust.entities.invaders;
 
 import engine.gfx.Camera;
+import engine.sfx.Audio;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -121,6 +122,7 @@ public abstract class AlienFormation extends StardustEntity{
 	private int adl=120;
 	private double at=0; //action time
 	private double atl=1.0/60; //action time limit
+	private int sfxi=0;
 	
 	private StardustEntity lastr=null;
 	public StardustEntity $killedLastAlien(){
@@ -163,6 +165,20 @@ public abstract class AlienFormation extends StardustEntity{
 		}else{
 			// decide next step
 			ai=0;
+			
+			// add sfx
+			if(sfxi<1) {
+				Audio.playSoundEffect("invaders-a", 1, -1);
+			} else if(sfxi<2) {
+				Audio.playSoundEffect("invaders-b", 1, -1);
+			} else if(sfxi<3) {
+				Audio.playSoundEffect("invaders-c", 1, -1);
+			} else {
+				Audio.playSoundEffect("invaders-d", 1, -1);
+			}
+			sfxi+=1;
+			sfxi%=4;
+			
 			Alien last=null;
 			Iterator<Alien> ie=aliens.iterator();
 			while(ie.hasNext()){

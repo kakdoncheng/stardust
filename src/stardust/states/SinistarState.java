@@ -3,6 +3,12 @@ package stardust.states;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import engine.GameFlags;
+import engine.State;
+import engine.Vector;
+import engine.entities.Point;
+import engine.gfx.Camera;
+import engine.sfx.Audio;
 import stardust.StardustGame;
 import stardust.entities.AntiMatterExplosion;
 import stardust.entities.Asteroid;
@@ -13,11 +19,6 @@ import stardust.entities.boss.Sinistar;
 import stardust.entities.sinistar.Servitor;
 import stardust.entities.sinistar.Sigil;
 import stardust.gfx.CharGraphics;
-import engine.GameFlags;
-import engine.State;
-import engine.Vector;
-import engine.entities.Point;
-import engine.gfx.Camera;
 
 public class SinistarState extends StardustState{
 	
@@ -42,17 +43,21 @@ public class SinistarState extends StardustState{
 	private double delay;
 
 	public void reset(){
+		Audio.clearBackgroundMusicQueue();
+		Audio.clearBackgroundMusic();
+		Audio.queueBackgroundMusic("moondeity-x-phonk-killer-megalomania/intro");
+		Audio.queueBackgroundMusic("moondeity-x-phonk-killer-megalomania/loop-1");
 		GameFlags.setFlag("warp", 1);
 		clearBackgroundText();
-		ec.clear();
-		ec.setRenderDistance(StardustGame.BOUNDS);
-		sparks.clear();
-		sparks.setRenderDistance(StardustGame.BOUNDS);
+		targetable.clear();
+		targetable.setRenderDistance(StardustGame.BOUNDS);
+		particles.clear();
+		particles.setRenderDistance(StardustGame.BOUNDS);
 		//
 		
 		debris=new ArrayList<StardustEntity>();
 		
-		dis="*.*****           ".toCharArray();
+		dis="*.*****                      ".toCharArray();
 		timer=0;
 		disT=0;
 		disi=0;
@@ -64,7 +69,7 @@ public class SinistarState extends StardustState{
 		// spawn player
 		player=new PlayerStarfighter(game, 0, 0);
 		game.$camera().hardCenterOnPoint(0, 0);
-		ec.addEntity(player);
+		targetable.addEntity(player);
 		
 		// boss xy
 		boss=null;
@@ -81,6 +86,8 @@ public class SinistarState extends StardustState{
 		// camera tracking
 		if(bossT<4){
 			game.$camera().centerOnEntity(point, dt);
+			// bodge invt reset
+			((PlayerStarfighter) player).resetInvTimer();
 		}else{
 			if(player!=null){
 				if(boss!=null){
@@ -107,14 +114,14 @@ public class SinistarState extends StardustState{
 		if(bossT>0.25&&sSpawned<1){
 			//spawn sigil
 			sigil=new Sigil(game, player.$x()+dx, player.$y()+dy);
-			ec.addEntity(sigil);
+			targetable.addEntity(sigil);
 			sSpawned=1;
 		}
 		if(bossT>3&&spawned<1){
 			//spawn boss
 			boss=new Sinistar(game, player.$x()+dx, player.$y()+dy);
 			boss.setTarget(player);
-			ec.addEntity(boss);
+			targetable.addEntity(boss);
 			sigil.deactivate();
 			//double ci=2*Math.PI;
 			//double cis=ci/256;
@@ -122,7 +129,7 @@ public class SinistarState extends StardustState{
 			//	game.$currentState().addEntity(new RadiantProjectile(game, i, boss));
 			//}
 			StardustEntity pulse=new AntiMatterExplosion(game, boss.$x(), boss.$y(), boss);
-			ec.addEntity(pulse);
+			targetable.addEntity(pulse);
 			spawned=1;
 		}
 		
@@ -131,7 +138,7 @@ public class SinistarState extends StardustState{
 			double t=game.$prng().$double(0, 2*Math.PI);
 			StardustEntity e=new Servitor(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
 			e.setTarget(player);
-			ec.addEntity(e);
+			targetable.addEntity(e);
 		}
 		
 		// spawn debris
@@ -155,15 +162,17 @@ public class SinistarState extends StardustState{
 					game.$camera().$dy()+Vector.vectorToDy(t,StardustGame.BOUNDS/2),
 					ds);
 			debris.add(de);
-			ec.addEntity(de);
+			targetable.addEntity(de);
 		}
 		
-		ec.update(dt);
-		sparks.update(dt);
+		targetable.update(dt);
+		particles.update(dt);
 		
 		// check end condition
 		if(spawned>0){
 			if((boss!=null && boss.$health()<1) || !player.isActive()){
+				Audio.clearBackgroundMusicQueue();
+				Audio.clearBackgroundMusic();
 				delay-=dt;
 				if(!player.isActive()){
 					game.flashRedBorder();
@@ -196,8 +205,8 @@ public class SinistarState extends StardustState{
 
 	public void render(Camera c) {
 		
-		ec.render(c);
-		sparks.render(c);
+		targetable.render(c);
+		particles.render(c);
 		
 		String s="";
 		for(char ch:dis){
