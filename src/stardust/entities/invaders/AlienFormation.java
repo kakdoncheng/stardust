@@ -168,13 +168,13 @@ public abstract class AlienFormation extends StardustEntity{
 			
 			// add sfx
 			if(sfxi<1) {
-				Audio.addSoundEffect("invaders-a", 1);
+				Audio.playSoundEffect("invaders-a", 1, -1);
 			} else if(sfxi<2) {
-				Audio.addSoundEffect("invaders-b", 1);
+				Audio.playSoundEffect("invaders-b", 1, -1);
 			} else if(sfxi<3) {
-				Audio.addSoundEffect("invaders-c", 1);
+				Audio.playSoundEffect("invaders-c", 1, -1);
 			} else {
-				Audio.addSoundEffect("invaders-d", 1);
+				Audio.playSoundEffect("invaders-d", 1, -1);
 			}
 			sfxi+=1;
 			sfxi%=4;

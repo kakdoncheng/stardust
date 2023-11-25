@@ -47,7 +47,7 @@ import engine.sfx.Audio;
 public class StardustGame extends Game{
 	
 	public static final String credits="Game Design, Programming, & Art: Linh-Han Van 01.01.2022";
-	public static final String version="v0.2.0+20221124";
+	public static final String version="v0.2.1+20221124";
 	
 	public StardustGame() {
 		super(0, 0, "Stardust");
@@ -153,6 +153,8 @@ public class StardustGame extends Game{
 		Audio.loadWavData("escape-151399/loop-1", 1, 1);
 		Audio.loadWavData("escape-151399/loop-2", 1, 1);
 		Audio.loadWavData("escape-151399/loop-all", 1, 1);
+		Audio.loadWavData("hero-80s-127027/intro", 1, 1);
+		Audio.loadWavData("hero-80s-127027/loop-a", 1, 1);
 		Audio.loadWavData("lifelike-126735/begin", 1, 1);
 		Audio.loadWavData("lifelike-126735/loop-1", 1, 1);
 		Audio.loadWavData("lifelike-126735/loop-2", 1, 1);
@@ -181,13 +183,13 @@ public class StardustGame extends Game{
 		
 		Audio.loadWavData("moondeity-x-phonk-killer-death-dagger/intro", 1, 1);
 		Audio.loadWavData("moondeity-x-phonk-killer-death-dagger/loop", 1, 1);
-		Audio.loadWavData("moondeity-x-phonk-killer-electric-shock/intro", 1, 1);
-		Audio.loadWavData("moondeity-x-phonk-killer-electric-shock/loop", 1, 1);
+		//Audio.loadWavData("moondeity-x-phonk-killer-electric-shock/intro", 1, 1);
+		//Audio.loadWavData("moondeity-x-phonk-killer-electric-shock/loop", 1, 1);
 		Audio.loadWavData("moondeity-x-phonk-killer-megalomania/intro", 1, 1);
 		Audio.loadWavData("moondeity-x-phonk-killer-megalomania/loop-1", 1, 1);
-		Audio.loadWavData("mr-tom-spacesynth/intro-a", 1, 1);
-		Audio.loadWavData("mr-tom-spacesynth/intro-b", 1, 1);
-		Audio.loadWavData("mr-tom-spacesynth/loop", 1, 1);
+		//Audio.loadWavData("mr-tom-spacesynth/intro-a", 1, 1);
+		//Audio.loadWavData("mr-tom-spacesynth/intro-b", 1, 1);
+		//Audio.loadWavData("mr-tom-spacesynth/loop", 1, 1);
 		
 		active=true;
 		setResolution(1920, 1080);
@@ -363,6 +365,9 @@ public class StardustGame extends Game{
 	
 	private int histage=0;
 	private int hiscore=0;
+	public int $histage() {
+		return histage;
+	}
 	public String $hiscore(){
 		if(flasht>0){
 			return flasht%0.5>=0.25?String.format("%d.%05d",histage,hiscore):"";

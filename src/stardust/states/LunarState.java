@@ -78,9 +78,8 @@ public class LunarState extends StardustState{
 			return;
 		}
 		if(bgmClear) {
-			Audio.queueBackgroundMusic("mr-tom-spacesynth/intro-a");
-			Audio.queueBackgroundMusic("mr-tom-spacesynth/intro-b");
-			Audio.queueBackgroundMusic("mr-tom-spacesynth/loop");
+			Audio.queueBackgroundMusic("hero-80s-127027/intro");
+			Audio.queueBackgroundMusic("hero-80s-127027/loop-a");
 			bgmClear=false;
 		}
 		

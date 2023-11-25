@@ -174,6 +174,10 @@ public class Audio {
 		playSoundEffect(key, volume, 0);
 	}
 	public static void playSoundEffect(String key, float volume, int priority){
+		AudioData dat=data.getOrDefault(key, null);
+		if(dat==null) {
+			return;
+		}
 		if(sfx[sfxi]!=null){
 			// find next non-playing, non-priority index
 			// if no such index available, do not play sfx
@@ -189,7 +193,7 @@ public class Audio {
 			}
 			sfx[sfxi].destroy();
 		}
-		sfx[sfxi]=new AudioSource(data.get(key), volume*SFX_VOLUME_MULTIPLIER, priority);
+		sfx[sfxi]=new AudioSource(dat, volume*SFX_VOLUME_MULTIPLIER, priority);
 		sfx[sfxi].play();
 		sfxi+=1;
 		sfxi%=sfx.length;
