@@ -2,7 +2,9 @@ package stardust.states;
 
 import stardust.StardustGame;
 import stardust.entities.ElectromagneticPulse;
+import stardust.entities.Explosion;
 import stardust.entities.IndicatorDangerRight;
+import stardust.entities.Spark;
 import stardust.entities.StardustEntity;
 import stardust.entities.boss.PossessedMachine;
 import stardust.entities.gradius.PlayerSpacecraft;
@@ -31,6 +33,15 @@ public class GradiusBossState extends StardustState{
 	private PossessedMachine boss;
 	private PlayerSpacecraft player;
 	private double bossT, spawned;
+	
+	// override for tracer dot
+	public void addEntity(StardustEntity e){
+		if(e instanceof Spark || e instanceof Explosion){
+			particles.addEntity(e);
+		}else{
+			targetable.addEntity(e);
+		}
+	}
 	
 	public void reset() {
 		GameFlags.setFlag("warp", 1);

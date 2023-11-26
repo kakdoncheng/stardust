@@ -279,7 +279,7 @@ public class EndlessState extends StardustState{
 					if(lunarsdt<0){
 						double t=game.$prng().$double(0, 2*Math.PI);
 						lunars=new ApolloServiceModule(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
-						lunarsdt=game.$prng().$double(30, 90);
+						lunarsdt=game.$prng().$double(15, 60);
 						targetable.addEntity(lunars);
 					}
 				}
@@ -288,7 +288,7 @@ public class EndlessState extends StardustState{
 					if(lunardt<0){
 						double t=game.$prng().$double(0, 2*Math.PI);
 						lunar=new ApolloLunarModule(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
-						lunardt=game.$prng().$double(30, 90);
+						lunardt=game.$prng().$double(15, 60);
 						targetable.addEntity(lunar);
 					}
 				}
@@ -297,7 +297,7 @@ public class EndlessState extends StardustState{
 					if(vostokdt<0){
 						double t=game.$prng().$double(0, 2*Math.PI);
 						vostok=new VostokOne(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
-						vostokdt=game.$prng().$double(30, 90);
+						vostokdt=game.$prng().$double(15, 60);
 						targetable.addEntity(vostok);
 					}
 				}
@@ -306,7 +306,7 @@ public class EndlessState extends StardustState{
 					if(sputnikdt<0){
 						double t=game.$prng().$double(0, 2*Math.PI);
 						sputnik=new SputnikOne(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
-						sputnikdt=game.$prng().$double(30, 90);
+						sputnikdt=game.$prng().$double(15, 60);
 						targetable.addEntity(sputnik);
 					}
 				}
@@ -315,7 +315,7 @@ public class EndlessState extends StardustState{
 					if(voyagerdt<0){
 						double t=game.$prng().$double(0, 2*Math.PI);
 						voyager=new VoyagerOne(game,player.$x()+Vector.vectorToDx(t,StardustGame.BOUNDS/2),player.$y()+Vector.vectorToDy(t,StardustGame.BOUNDS/2));
-						voyagerdt=game.$prng().$double(30, 90);
+						voyagerdt=game.$prng().$double(15, 60);
 						targetable.addEntity(voyager);
 					}
 				}

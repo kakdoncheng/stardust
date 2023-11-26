@@ -81,6 +81,10 @@ public class DumbBogey extends StardustEntity{
 	}
 
 	public void onDeath() {
+		double d=game.$prng().$double(0, 1);
+		if(d>0.25) {
+			return;
+		}
 		if(killer instanceof PlayerStarfighter || killer instanceof ClassicPlayerSpaceship){
 			game.$currentState().addEntity(new PowerClassicProjectile(game, x, y, (StardustEntity) killer));
 		}

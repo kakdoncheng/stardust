@@ -3,10 +3,15 @@ package stardust.states;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import engine.GameFlags;
+import engine.State;
+import engine.gfx.Camera;
+import engine.sfx.Audio;
 import stardust.StardustGame;
 import stardust.entities.ElectromagneticPulse;
 import stardust.entities.Explosion;
 import stardust.entities.IndicatorDestroy;
+import stardust.entities.Spark;
 import stardust.entities.StardustEntity;
 import stardust.entities.demonstar.AntiMartianProjectile;
 import stardust.entities.demonstar.MartianFighter;
@@ -17,10 +22,6 @@ import stardust.entities.demonstar.MartianShip;
 import stardust.entities.demonstar.MartianSwarmTypeS;
 import stardust.entities.demonstar.PlayerSpaceship;
 import stardust.gfx.CharGraphics;
-import engine.GameFlags;
-import engine.State;
-import engine.gfx.Camera;
-import engine.sfx.Audio;
 
 public class DemonstarState extends StardustState{
 
@@ -59,6 +60,15 @@ public class DemonstarState extends StardustState{
 		player=new PlayerSpaceship(game, 0, 0);
 		targetable.addEntity(player);
 		MartianShip.destroyIfOutOfScreenBounds(false);
+	}
+	
+	// override for tracer dot
+	public void addEntity(StardustEntity e){
+		if(e instanceof Spark || e instanceof Explosion){
+			particles.addEntity(e);
+		}else{
+			targetable.addEntity(e);
+		}
 	}
 
 	public void update(double dt) {

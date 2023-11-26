@@ -90,5 +90,8 @@ public class DroneTypeL extends Starcraft{
 
 	public void onDeath() {
 		game.$currentState().addEntity(new ElectromagneticPulse(game,x,y));
+		if(killer instanceof PlayerStarfighter){
+			game.$currentState().addEntity(new PowerLascannon(game, x, y, (StardustEntity) killer));
+		}
 	}
 }

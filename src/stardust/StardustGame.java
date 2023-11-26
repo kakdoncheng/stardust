@@ -47,7 +47,7 @@ import engine.sfx.Audio;
 public class StardustGame extends Game{
 	
 	public static final String credits="Game Design, Programming, & Art: Linh-Han Van 01.01.2022";
-	public static final String version="v0.2.3+20221125";
+	public static final String version="v0.3.0+20221126";
 	
 	public StardustGame() {
 		super(0, 0, "Stardust");
@@ -83,6 +83,7 @@ public class StardustGame extends Game{
 		GameFlags.setFlag("goto-portal", 1);
 		GameFlags.setFlag("flash-hiscore", 0);
 		
+		GameFlags.setFlag("initial-startup", 1);
 		GameFlags.setFlag("warp", 0);
 		GameFlags.setFlag("success", 0);
 		GameFlags.setFlag("player-x", 0);
@@ -110,7 +111,7 @@ public class StardustGame extends Game{
 		Audio.loadWavData("fire-nuke", 1, 0.8f);
 		Audio.loadWavData("fire-blaster", 1, 0.8f);
 		Audio.loadWavData("fire-blasterlow", 1, 0.8f);
-		Audio.loadWavData("fire-bogey", 1, 1);
+		Audio.loadWavData("fire-bogey", 1, 0.8f);
 		Audio.loadWavData("fire-energy", 1, 1);
 		Audio.loadWavData("fire-gradius", 1, 1);
 		Audio.loadWavData("fire-halo", 1, 1);
@@ -135,6 +136,7 @@ public class StardustGame extends Game{
 		Audio.loadWavData("invaders-b", 1, 64);
 		Audio.loadWavData("invaders-c", 1, 64);
 		Audio.loadWavData("invaders-d", 1, 64);
+		Audio.loadWavData("glitch-1", 1, 1);
 		
 		// bgm
 		// might need to dynamically load?

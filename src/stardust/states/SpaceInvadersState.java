@@ -50,6 +50,7 @@ public class SpaceInvadersState extends StardustState{
 		ufodt=4;
 		//adl=128;
 		delay=1;
+		gsfx=true;
 		
 		player=new PlayerCannon(game, 0, 144);
 		swarm=new ClassicAlienFormation(game,0,-100);
@@ -60,11 +61,16 @@ public class SpaceInvadersState extends StardustState{
 		targetable.addEntity(swarm);
 	}
 
+	private boolean gsfx;
 	public void update(double dt) {
 		if(bgT<0.5){
 			bgT+=dt;
 			updateBackgroundText();
 			game.hideStardust();
+			if(gsfx) {
+				Audio.playSoundEffect("glitch-1", 1, 1);
+				gsfx=false;
+			}
 			return;
 		}
 		

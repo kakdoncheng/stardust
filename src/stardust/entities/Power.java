@@ -2,10 +2,10 @@ package stardust.entities;
 
 import org.lwjgl.opengl.GL11;
 
-import stardust.StardustGame;
 import engine.Vector;
 import engine.gfx.Camera;
 import engine.input.MouseHandler;
+import stardust.StardustGame;
 
 public class Power extends StardustEntity{
 	public Power(StardustGame game, double x, double y, StardustEntity target) {
@@ -31,7 +31,7 @@ public class Power extends StardustEntity{
 			return false;
 		}
 		cd+=dt;
-		if(cd>0.125){
+		if(cd>0.18){
 			AntiMatterMissile e=new AntiMatterMissile(game, owner.$t(), owner);
 			e.biasTowards(MouseHandler.$mx(), MouseHandler.$my());
 			game.$currentState().addEntity(e);
@@ -78,7 +78,54 @@ public class Power extends StardustEntity{
 	private double scalei=2;
 	public void render(Camera c) {
 		
-		// render hud indicator
+		// if off-screen, render indicator
+		double cx=c.$cx(x);
+		double cy=c.$cy(y);
+		double hgw=game.$displayWidth()/2;
+		double hgh=game.$displayHeight()/2;
+		boolean outOfBounds=false;
+		if(cx<-hgw){
+			cx=-hgw;
+			outOfBounds=true;
+		}else if(cx>hgw){
+			cx=hgw;
+			outOfBounds=true;
+		}
+		if(cy<-hgh){
+			cy=-hgh;
+			outOfBounds=true;
+		}else if(cy>hgh){
+			cy=hgh;
+			outOfBounds=true;
+		}
+		if(outOfBounds){
+			// arrow indicator
+			double tt=Vector.directionFromTo(x, y, c.$dx(), c.$dy());
+			double rr=4*c.$zoom();
+			double pad=4;
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
+			GL11.glPushMatrix();
+			GL11.glTranslated(cx, cy, 0);
+			GL11.glRotated(Math.toDegrees(tt), 0, 0, 1);
+			GL11.glColor4d(1, 0.5, 0, alpha);
+			GL11.glBegin(GL11.GL_LINES);
+			
+			GL11.glVertex2d(0, pad);
+			GL11.glVertex2d(-rr*0.5, rr+pad);
+			
+			GL11.glVertex2d(-rr*0.5, rr+pad);
+			GL11.glVertex2d(rr*0.5, rr+pad);
+			
+			GL11.glVertex2d(rr*0.5, rr+pad);
+			GL11.glVertex2d(0, pad);
+			
+			GL11.glEnd();
+			GL11.glPopMatrix();
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
+		}
+		
+		// deprecated indicator code
+		/*
 		double hdx=160;
 		if(target!=null && Vector.distanceFromTo(c.$dx(), c.$dy(), x, y)>hdx){//distanceTo(target)>hdx){
 			//double tt=target.directionTo(this);
@@ -112,6 +159,7 @@ public class Power extends StardustEntity{
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
 			//return;
 		}
+		//*/
 		
 		GL11.glColor4d(1, 0.5, 0, 1);
 		//setRadarColor(1);

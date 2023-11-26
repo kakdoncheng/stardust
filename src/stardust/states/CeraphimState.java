@@ -4,6 +4,7 @@ import engine.GameFlags;
 import engine.State;
 import engine.Vector;
 import engine.gfx.Camera;
+import engine.sfx.Audio;
 import stardust.StardustGame;
 import stardust.entities.ElectromagneticPulse;
 import stardust.entities.PlayerStarfighter;
@@ -77,6 +78,8 @@ public class CeraphimState extends StardustState{
 		if((boss!=null && boss.$health()<1) || !player.isActive()){
 			delay-=dt;
 			if(!player.isActive()){
+				Audio.clearBackgroundMusicQueue();
+				Audio.clearBackgroundMusic();
 				game.flashRedBorder();
 				if(delay>1){
 					delay=1;

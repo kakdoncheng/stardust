@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL11;
 
 import stardust.StardustGame;
 import stardust.entities.ElectromagneticPulse;
+import stardust.entities.Power;
 import stardust.entities.RadarScan;
 import stardust.entities.StardustEntity;
 
@@ -29,6 +30,7 @@ public class PlayerCannon extends StardustEntity{
 	private double invt=3;
 	private StardustEntity beam;
 	private RadarScan rc;
+	private Power power;
 	
 	public void update(double dt) {
 		if(!active){
@@ -59,20 +61,34 @@ public class PlayerCannon extends StardustEntity{
 		// weapons
 		cooldown+=dt;
     	if (Keyboard.isKeyDown(Keyboard.KEY_SPACE) || Mouse.isButtonDown(0)) {
-    		if(beam==null || !beam.isActive()){
-    			if(cooldown>0.125){
-    				StardustEntity e=new ShellProjectile(game, t, this);
-    				beam=e;
-        			game.$currentState().addEntity(e);
-        			cooldown=0;
+    		if(power!=null&&!power.isEmpty()){
+    			power.usePrimary(this, dt);
+    		}else{
+    			if(beam==null || !beam.isActive()){
+        			if(cooldown>0.125){
+        				StardustEntity e=new ShellProjectile(game, t, this);
+        				beam=e;
+            			game.$currentState().addEntity(e);
+            			cooldown=0;
+            		}
         		}
     		}
-    		
     	}
     	
     	rc.update(dt);
     	
-    	// check for collisions
+    	// no need to check for collisions
+    	
+    	// check for powers
+    	for(StardustEntity e:game.$currentState().$entities()){
+			if(e instanceof Power){
+				if(distanceTo(e)<=r+e.$r()){
+					power=(Power)e;
+					e.deactivate();
+				}
+				continue;
+			}
+		}
 	}
 
 	private double l[]={

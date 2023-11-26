@@ -1,11 +1,11 @@
 package stardust.entities.invaders;
 
-import engine.gfx.Camera;
-
 import org.lwjgl.opengl.GL11;
 
+import engine.gfx.Camera;
 import stardust.StardustGame;
 import stardust.entities.ElectromagneticPulse;
+import stardust.entities.PlayerStarfighter;
 import stardust.entities.StardustEntity;
 
 public class Ufo extends StardustEntity{
@@ -60,5 +60,8 @@ public class Ufo extends StardustEntity{
 
 	public void onDeath() {
 		game.$currentState().addEntity(new ElectromagneticPulse(game,x,y));
+		if(killer instanceof PlayerStarfighter || killer instanceof PlayerCannon){
+			game.$currentState().addEntity(new PowerAlienProjectile(game, x, y, (StardustEntity) killer));
+		}
 	}
 }

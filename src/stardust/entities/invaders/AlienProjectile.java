@@ -14,7 +14,7 @@ public class AlienProjectile extends Projectile{
 
 	public AlienProjectile(StardustGame game, double t, StardustEntity owner) {
 		super(game, owner.$x(), owner.$y(), t, 160, 320, owner);
-		setBoundRadius(1);
+		setBoundRadius(4);
 		ox=owner.$x();
 		oy=owner.$y();
 		ai=game.$prng().$int(0, 2);
@@ -24,6 +24,11 @@ public class AlienProjectile extends Projectile{
 	private double ox;
 	private double oy;
 	private int ai;
+	
+	public void update(double dt) {
+		super.update(dt);
+		blip();
+	}
 
 	private double[][] l={
 		//{2,0,2,1,2,1,1,1,1,1,1,2,1,2,0,2,0,2,0,3,0,3,-1,3,-1,3,-1,4,-1,4,0,4,0,4,0,5,0,5,1,5,1,5,1,6,1,6,2,6,2,6,2,7,2,7,1,7,1,7,1,8,1,8,0,8,0,8,0,9,0,9,-1,9,-1,9,-1,10,-1,10,0,10,0,10,0,11,0,11,1,11,1,11,1,12,1,12,2,12,2,12,2,13,2,13,1,13,1,13,1,12,1,12,0,12,0,12,0,11,0,11,-1,11,-1,11,-1,10,-1,10,-2,10,-2,10,-2,9,-2,9,-1,9,-1,9,-1,8,-1,8,0,8,0,8,0,7,0,7,1,7,1,7,1,6,1,6,0,6,0,6,0,5,0,5,-1,5,-1,5,-1,4,-1,4,-2,4,-2,4,-2,3,-2,3,-1,3,-1,3,-1,2,-1,2,0,2,0,2,0,1,0,1,1,1,1,1,1,0,1,0,2,0,},
@@ -68,9 +73,14 @@ public class AlienProjectile extends Projectile{
 	public void onDeath() {
 		
 	}
+	
+	public boolean isCollidable(){
+		return false;
+	}
 
 	protected void onImpactWith(StardustEntity e) {
-		if(e instanceof Alien){
+		active=true;
+		if(owner instanceof Alien && e instanceof Alien){
 			active=true;
 			return;
 		}
