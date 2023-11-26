@@ -6,6 +6,7 @@ import stardust.StardustGame;
 import stardust.entities.MissileProjectile;
 import stardust.entities.StardustEntity;
 import stardust.entities.TracerDot;
+import engine.Vector;
 import engine.gfx.Camera;
 import engine.sfx.Audio;
 
@@ -14,9 +15,15 @@ public class AnnihilatingMissile extends MissileProjectile{
 	public AnnihilatingMissile(StardustGame game, double tx, double ty, double t, StardustEntity owner) {
 		super(game, owner.$x(), owner.$y(), tx, ty, t, 300, 1200, owner);
 		Audio.addSoundEffect("fire-nuke", 1);
+		tdlx=x;
+		tdly=y;
 	}
+
+	// track last tracer dot
+	private double tdlx;
+	private double tdly;
 	
-	private double dtt=0;
+	// lock on target/location
 	private boolean showtxy=false;
 	private StardustEntity lock;
 	public void follow(StardustEntity e){
@@ -30,11 +37,24 @@ public class AnnihilatingMissile extends MissileProjectile{
 			this.lockOnTarget(lock);
 		}
 		super.update(dt);
-		dtt-=dt;
-		if(dtt<=0){
-			game.$currentState().addEntity(new TracerDot(game,x,y,1));
-			dtt+=1.0/60;
+		
+		// see AntiMatterMissile
+		// distance until next dot based on speed
+		double dld=Vector.distanceFromTo(tdlx, tdly, x, y);
+		double dtt=this.$speed()/60;
+		if(dtt<1) {
+			dtt=1;
 		}
+		while(dld>=dtt) {
+			double tld=Vector.directionFromTo(tdlx, tdly, x, y);
+			double ddx=Vector.vectorToDx(tld, dtt);
+			double ddy=Vector.vectorToDy(tld, dtt);
+			tdlx+=ddx;
+			tdly+=ddy;
+			dld=Vector.distanceFromTo(tdlx, tdly, x, y);
+			game.$currentState().addEntity(new TracerDot(game,tdlx,tdly,1,1,1));
+		}
+		
 		blip();
 	}
 

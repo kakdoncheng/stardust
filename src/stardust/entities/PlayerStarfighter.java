@@ -4,13 +4,14 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import stardust.StardustGame;
-import stardust.gfx.CharGraphics;
-import stardust.gfx.VectorGraphics;
 import engine.GameFlags;
 import engine.Vector;
 import engine.gfx.Camera;
 import engine.input.MouseHandler;
+import stardust.StardustGame;
+import stardust.entities.asteroids.PowerClassicProjectile;
+import stardust.gfx.CharGraphics;
+import stardust.gfx.VectorGraphics;
 
 public class PlayerStarfighter extends StardustEntity{
 
@@ -50,7 +51,7 @@ public class PlayerStarfighter extends StardustEntity{
 		// power & invulnurable toggle
 		if(GameFlags.is("debug")){
 			if(Keyboard.isKeyDown(Keyboard.KEY_F)){
-				power=new PowerLascannon(game,0,0,this);
+				power=new PowerClassicProjectile(game,0,0,this);
 				//power=new PowerBulletHail(game,0,0,this);
 			}
 			if(Keyboard.isKeyDown(Keyboard.KEY_G)){

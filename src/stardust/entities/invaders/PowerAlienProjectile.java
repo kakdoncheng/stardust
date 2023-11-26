@@ -1,11 +1,14 @@
-package stardust.entities;
+package stardust.entities.invaders;
 
 import stardust.StardustGame;
+import stardust.entities.AntiMatterBomb;
+import stardust.entities.Power;
+import stardust.entities.StardustEntity;
 import stardust.entities.boss.LascannonBeam;
 
-public class PowerLascannon extends Power{
+public class PowerAlienProjectile extends Power{
 
-	public PowerLascannon(StardustGame game, double x, double y,
+	public PowerAlienProjectile(StardustGame game, double x, double y,
 			StardustEntity target) {
 		super(game, x, y, target);
 		ammo=90;

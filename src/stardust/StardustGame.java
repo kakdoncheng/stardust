@@ -47,7 +47,7 @@ import engine.sfx.Audio;
 public class StardustGame extends Game{
 	
 	public static final String credits="Game Design, Programming, & Art: Linh-Han Van 01.01.2022";
-	public static final String version="v0.2.1+20221124";
+	public static final String version="v0.2.3+20221125";
 	
 	public StardustGame() {
 		super(0, 0, "Stardust");
@@ -131,10 +131,10 @@ public class StardustGame extends Game{
 		Audio.loadWavData("blip", 1, 1);
 		Audio.loadWavData("pongf4", 1, 1);
 		Audio.loadWavData("pongf5", 1, 1);
-		Audio.loadWavData("invaders-a", 1, 32);
-		Audio.loadWavData("invaders-b", 1, 32);
-		Audio.loadWavData("invaders-c", 1, 32);
-		Audio.loadWavData("invaders-d", 1, 32);
+		Audio.loadWavData("invaders-a", 1, 64);
+		Audio.loadWavData("invaders-b", 1, 64);
+		Audio.loadWavData("invaders-c", 1, 64);
+		Audio.loadWavData("invaders-d", 1, 64);
 		
 		// bgm
 		// might need to dynamically load?
@@ -180,16 +180,6 @@ public class StardustGame extends Game{
 		Audio.loadWavData("synthwave-background-music-155701/intro-1", 1, 1);
 		Audio.loadWavData("synthwave-background-music-155701/intro-2", 1, 1);
 		Audio.loadWavData("synthwave-background-music-155701/loop", 1, 1);
-		
-		Audio.loadWavData("moondeity-x-phonk-killer-death-dagger/intro", 1, 1);
-		Audio.loadWavData("moondeity-x-phonk-killer-death-dagger/loop", 1, 1);
-		//Audio.loadWavData("moondeity-x-phonk-killer-electric-shock/intro", 1, 1);
-		//Audio.loadWavData("moondeity-x-phonk-killer-electric-shock/loop", 1, 1);
-		Audio.loadWavData("moondeity-x-phonk-killer-megalomania/intro", 1, 1);
-		Audio.loadWavData("moondeity-x-phonk-killer-megalomania/loop-1", 1, 1);
-		//Audio.loadWavData("mr-tom-spacesynth/intro-a", 1, 1);
-		//Audio.loadWavData("mr-tom-spacesynth/intro-b", 1, 1);
-		//Audio.loadWavData("mr-tom-spacesynth/loop", 1, 1);
 		
 		active=true;
 		setResolution(1920, 1080);

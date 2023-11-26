@@ -6,6 +6,7 @@ import engine.gfx.Camera;
 import org.lwjgl.opengl.GL11;
 
 import stardust.StardustGame;
+import stardust.entities.PlayerStarfighter;
 import stardust.entities.StardustEntity;
 
 public class Bogey extends StardustEntity{
@@ -98,6 +99,8 @@ public class Bogey extends StardustEntity{
 	}
 
 	public void onDeath() {
-		
+		if(killer instanceof PlayerStarfighter || killer instanceof ClassicPlayerSpaceship){
+			game.$currentState().addEntity(new PowerClassicProjectile(game, x, y, (StardustEntity) killer));
+		}
 	}
 }

@@ -7,6 +7,7 @@ import stardust.entities.Explosion;
 import stardust.entities.Projectile;
 import stardust.entities.StardustEntity;
 import stardust.entities.TracerDot;
+import engine.Vector;
 import engine.entities.Entity;
 import engine.gfx.Camera;
 
@@ -16,11 +17,20 @@ public class CeraphimMissile extends Projectile{
 		super(game, owner.$x(), owner.$y(), t, 240, 640, owner);
 		setBoundRadius(2);
 		setTarget(target);
+		tdlx=x;
+		tdly=y;
+		dtt=240.0/60.0;
 	}
 
-	private double dtt=0;
+	// track last tracer dot
+	private double tdlx;
+	private double tdly;
+	private double dtt;
+	
+	// random delay movement
 	private double rt=game.$prng().$double(-1, 3);
 	private double rtb=game.$prng().$double(0, 1);
+	
 	public void update(double dt) {
 		super.update(dt);
 		blip();
@@ -36,12 +46,16 @@ public class CeraphimMissile extends Projectile{
 		}
 		
 		setSpeedVector(t, $speed());
-		dtt-=dt;
-		if(dtt<=0){
-			game.$currentState().addEntity(new TracerDot(game,x,y,1,fade,1));
-			dtt+=1.0/60;
+		double dld=Vector.distanceFromTo(tdlx, tdly, x, y);
+		while(dld>=dtt) {
+			double tld=Vector.directionFromTo(tdlx, tdly, x, y);
+			double ddx=Vector.vectorToDx(tld, dtt);
+			double ddy=Vector.vectorToDy(tld, dtt);
+			tdlx+=ddx;
+			tdly+=ddy;
+			dld=Vector.distanceFromTo(tdlx, tdly, x, y);
+			game.$currentState().addEntity(new TracerDot(game,tdlx,tdly,1,fade,1));
 		}
-		t+=dt;
 	}
 	
 	// x1, y1, x2, y2 line render

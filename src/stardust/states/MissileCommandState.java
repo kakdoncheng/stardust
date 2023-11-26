@@ -67,7 +67,7 @@ public class MissileCommandState extends StardustState{
 		sirenT=2;
 		siren=false;
 		tagged=false;
-		warheads=40;
+		warheads=45;
 		delayw=4;
 		delayl=5;
 		
@@ -208,7 +208,7 @@ public class MissileCommandState extends StardustState{
 		}
 		// only speed up warheads when all ammo has exploded
 		if(isff){
-			for(StardustEntity e:targetable.$entities()){
+			for(StardustEntity e:this.$entities()){
 				if(e instanceof AnnihilatingMissile){
 					isff=false;
 					break;

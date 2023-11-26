@@ -1,16 +1,15 @@
 package stardust.states;
 
+import engine.GameFlags;
+import engine.State;
+import engine.Vector;
+import engine.gfx.Camera;
 import stardust.StardustGame;
 import stardust.entities.ElectromagneticPulse;
 import stardust.entities.PlayerStarfighter;
 import stardust.entities.StardustEntity;
 import stardust.entities.boss.Ceraphim;
 import stardust.gfx.CharGraphics;
-import engine.GameFlags;
-import engine.State;
-import engine.Vector;
-import engine.gfx.Camera;
-import engine.sfx.Audio;
 
 public class CeraphimState extends StardustState{
 	
@@ -60,8 +59,8 @@ public class CeraphimState extends StardustState{
 			bgT+=dt;
 			if(!bgmClear) {
 				// dynamically load music here?
-				Audio.clearBackgroundMusicQueue();
-				Audio.clearBackgroundMusic();
+				//Audio.clearBackgroundMusicQueue();
+				//Audio.clearBackgroundMusic();
 				bgmClear=true;
 			}
 			
@@ -70,8 +69,7 @@ public class CeraphimState extends StardustState{
 			return;
 		}
 		if(bgmClear) {
-			Audio.queueBackgroundMusic("moondeity-x-phonk-killer-death-dagger/intro");
-			Audio.queueBackgroundMusic("moondeity-x-phonk-killer-death-dagger/loop");
+			// queue bgm
 			bgmClear=false;
 		}
 		

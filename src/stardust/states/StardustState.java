@@ -11,6 +11,7 @@ import stardust.StardustGame;
 import stardust.entities.Explosion;
 import stardust.entities.Spark;
 import stardust.entities.StardustEntity;
+import stardust.entities.TracerDot;
 import stardust.gfx.CharGraphics;
 
 public abstract class StardustState extends State{
@@ -21,7 +22,7 @@ public abstract class StardustState extends State{
 	protected EntityCollection<StardustEntity> particles;
 	
 	public void addEntity(StardustEntity e){
-		if(e instanceof Spark || e instanceof Explosion){
+		if(e instanceof Spark || e instanceof Explosion || e instanceof TracerDot){
 			particles.addEntity(e);
 		}else{
 			targetable.addEntity(e);

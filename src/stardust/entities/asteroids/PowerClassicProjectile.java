@@ -1,40 +1,32 @@
-package stardust.entities;
+package stardust.entities.asteroids;
 
 import org.lwjgl.opengl.GL11;
 
-import stardust.StardustGame;
 import engine.Vector;
 import engine.gfx.Camera;
-import engine.input.MouseHandler;
+import stardust.StardustGame;
+import stardust.entities.AntiMatterBomb;
+import stardust.entities.Power;
+import stardust.entities.StardustEntity;
+import stardust.states.EndlessState;
 
-public class Power extends StardustEntity{
-	public Power(StardustGame game, double x, double y, StardustEntity target) {
-		super(game);
-		setXY(x, y);
-		setBoundRadius(5);
-		setDirection(game.$prng().$double(0, 2*Math.PI));
-		setSpeedVector(t, speed);
-		setTarget(target);
-		blip();
-	}
-	
-	protected int speed=45;
-	protected double rt=0;
-	protected double cd=0;
-	protected int ammo=60;
-	
-	public boolean isEmpty(){
-		return ammo<=0;
+public class PowerClassicProjectile extends Power{
+
+	public PowerClassicProjectile(StardustGame game, double x, double y,
+			StardustEntity target) {
+		super(game, x, y, target);
+		ammo=120;
+		wild=game.$currentState() instanceof EndlessState;
 	}
 	public boolean usePrimary(StardustEntity owner, double dt){
-		if(isEmpty()) {
-			return false;
-		}
 		cd+=dt;
-		if(cd>0.125){
-			AntiMatterMissile e=new AntiMatterMissile(game, owner.$t(), owner);
-			e.biasTowards(MouseHandler.$mx(), MouseHandler.$my());
-			game.$currentState().addEntity(e);
+		if(cd>0.05){
+			ClassicProjectile cp=new ClassicProjectile(game, owner.$t(), owner);
+			cp.applyAccelerationVector(owner.$speedt(), owner.$speed(), 1);
+			game.$currentState().addEntity(cp);
+			cp=new ClassicProjectile(game, owner.$t()+game.$prng().$double(-0.125, 0.125), owner);
+			cp.applyAccelerationVector(owner.$speedt(), owner.$speed(), 1);
+			game.$currentState().addEntity(cp);
 			cd=0;
 			ammo--;
 			return true;
@@ -42,13 +34,13 @@ public class Power extends StardustEntity{
 		return false;
 	}
 	public void useSecondary(StardustEntity owner){
-		if(isEmpty()) {
-			return;
-		}
 		ammo=0;
 		game.$currentState().addEntity(new AntiMatterBomb(game, owner.$t(), owner));
 	}
 	
+	private boolean wild;
+	
+	// override methods
 	public void update(double dt) {
 		//blip();
 		updateBlip(dt);
@@ -62,25 +54,22 @@ public class Power extends StardustEntity{
 		}
 		
 		updatePosition(dt);
-		//wraparoundIfOutOfScreenBounds();
-		deactivateIfOutOfBounds();
+		if(wild) {
+			deactivateIfOutOfBounds();
+		} else {
+			wraparoundIfOutOfScreenBounds();
+		}
+		//
 	}
 	
-	// x1, y1, x2, y2 line render
-	//private double l[]={
-	//	0,-6,4,-4,4,-4,6,0,6,0,4,4,4,4,0,6,0,6,-4,4,-4,4,-6,0,-6,0,-4,-4,-4,-4,0,-6,0,-7,-4,-5,-4,-5,-4,-4,-4,-4,-5,-4,-5,-4,-7,0,-7,0,-5,4,-5,4,-4,4,-4,4,-4,5,-4,5,0,7,0,7,4,5,4,5,4,4,4,4,5,4,5,4,7,0,7,0,5,-4,5,-4,4,-4,4,-4,4,-5,4,-5,0,-7,-4,-5,-5,-5,-5,-5,-5,-4,-5,4,-5,5,-5,5,-4,5,4,5,5,5,5,5,5,4,5,-4,5,-5,5,-5,4,-5,
-		//0,-6,4,-4,4,-4,6,0,6,0,4,4,4,4,0,6,0,6,-4,4,-4,4,-6,0,-6,0,-4,-4,-4,-4,0,-6,
-	//};
-	//private double scale=1;
 	private double li[]={
 		0,-2,2,0,2,0,1,0,1,0,1,2,1,2,-1,2,-1,2,-1,0,-1,0,-2,0,-2,0,0,-2,
 	};
 	private double scalei=2;
 	public void render(Camera c) {
-		
 		// render hud indicator
 		double hdx=160;
-		if(target!=null && Vector.distanceFromTo(c.$dx(), c.$dy(), x, y)>hdx){//distanceTo(target)>hdx){
+		if(wild && target!=null && Vector.distanceFromTo(c.$dx(), c.$dy(), x, y)>hdx){//distanceTo(target)>hdx){
 			//double tt=target.directionTo(this);
 			//double tx=target.$x()+Vector.vectorToDx(tt, hdx);
 			//double ty=target.$y()+Vector.vectorToDy(tt, hdx);
@@ -154,13 +143,5 @@ public class Power extends StardustEntity{
 		GL11.glEnd();
 		GL11.glPopMatrix();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
-	}
-	
-	public boolean isCollidable(){
-		return false;
-	}
-	
-	public void onDeath() {
-		game.$currentState().addEntity(new RadarBlip(game,x,y));
 	}
 }

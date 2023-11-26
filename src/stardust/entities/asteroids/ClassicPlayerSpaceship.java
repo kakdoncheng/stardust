@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 import stardust.StardustGame;
 import stardust.entities.ElectromagneticPulse;
 import stardust.entities.Explosion;
+import stardust.entities.Power;
 import stardust.entities.Projectile;
 import stardust.entities.RadarScan;
 import stardust.entities.StardustEntity;
@@ -34,6 +35,7 @@ public class ClassicPlayerSpaceship extends StardustEntity{
 	private double error=0;
 	
 	private RadarScan rc;
+	private Power power;
 	
 	public void update(double dt) {
 		if(!active){
@@ -74,13 +76,18 @@ public class ClassicPlayerSpaceship extends StardustEntity{
 		wraparoundIfOutOfScreenBounds();
 		
 		// weapons
+		// delay reload timer 
 		boolean fired=false;
 		cooldown+=dt;
     	if(Keyboard.isKeyDown(Keyboard.KEY_SPACE) || Mouse.isButtonDown(0)) {
-    		if(cooldown>0.125){
-    			game.$currentState().addEntity(new ClassicProjectile(game, t, this));
-    			game.$currentState().addEntity(new ClassicProjectile(game, t+game.$prng().$double(-0.125, 0.125), this));
-    			fired=true;
+    		if(power!=null&&!power.isEmpty()){
+    			fired=power.usePrimary(this, dt);
+    		}else{
+    			if(cooldown>0.125){
+    				game.$currentState().addEntity(new ClassicProjectile(game, t, this));
+        			fired=true;
+        			cooldown=0;
+        		}
     		}
     	}
     	
@@ -95,6 +102,8 @@ public class ClassicPlayerSpaceship extends StardustEntity{
         //		}
         //	}
     	//}
+    	
+    	// catch up reload timer
     	if(fired){
     		cooldown=0;
     	}
@@ -139,6 +148,18 @@ public class ClassicPlayerSpaceship extends StardustEntity{
     			}
     		}
     	}
+    	
+    	// check for powers
+    	for(StardustEntity e:game.$currentState().$entities()){
+			if(e instanceof Power){
+				if(distanceTo(e)<=r+e.$r()){
+					power=(Power)e;
+					e.deactivate();
+				}
+				continue;
+			}
+		}
+    	
     	rc.update(dt);
 	}
 

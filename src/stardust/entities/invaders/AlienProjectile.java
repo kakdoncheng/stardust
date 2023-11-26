@@ -74,6 +74,7 @@ public class AlienProjectile extends Projectile{
 			active=true;
 			return;
 		}
+		e.setKiller(owner);
 		e.setTarget(owner);
 		e.deactivate();
 		game.$currentState().addEntity(new Explosion(game, e.$x(), e.$y(), (int)e.$r()*1));

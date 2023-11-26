@@ -37,6 +37,7 @@ public class ClassicProjectile extends Projectile{
 	}
 
 	protected void onImpactWith(StardustEntity e) {
+		e.setKiller(owner);
 		e.setTarget(owner);
 		e.deactivate();
 		game.$currentState().addEntity(new Explosion(game, e.$x(), e.$y(), (int)e.$r()*1));

@@ -2,10 +2,10 @@ package stardust.entities;
 
 import org.lwjgl.opengl.GL11;
 
-import stardust.StardustGame;
 import engine.Vector;
 import engine.gfx.Camera;
 import engine.sfx.Audio;
+import stardust.StardustGame;
 
 public class AntiMatterMissile extends Projectile{
 
@@ -13,6 +13,9 @@ public class AntiMatterMissile extends Projectile{
 		super(game, owner.$x(), owner.$y(), t, 280, 640, owner);
 		setBoundRadius(2);
 		Audio.addSoundEffect("fire-blaster", 1);
+		tdlx=x;
+		tdly=y;
+		dtt=280.0/60.0;
 	}
 
 	// bias system where projectiles will attempt to choose
@@ -26,7 +29,11 @@ public class AntiMatterMissile extends Projectile{
 		bias=true;
 	}
 	
-	private double dtt=0;
+	// track last tracer dot
+	private double tdlx;
+	private double tdly;
+	private double dtt;
+	
 	public void update(double dt) {
 		super.update(dt);
 		blip();
@@ -57,12 +64,31 @@ public class AntiMatterMissile extends Projectile{
 			setDirection($speedt());
 		}
 		
+		
+		// tracer dot affected by bullet time
+		// lock dot position by checking last dot
+		//*
+		double dld=Vector.distanceFromTo(tdlx, tdly, x, y);
+		while(dld>=dtt) {
+			double tld=Vector.directionFromTo(tdlx, tdly, x, y);
+			double ddx=Vector.vectorToDx(tld, dtt);
+			double ddy=Vector.vectorToDy(tld, dtt);
+			tdlx+=ddx;
+			tdly+=ddy;
+			dld=Vector.distanceFromTo(tdlx, tdly, x, y);
+			game.$currentState().addEntity(new TracerDot(game,tdlx,tdly,1,fade,1));
+		}
+		//*/
+		
+		// deprecated tracer dot code
+		/*
 		dtt-=dt;
 		if(dtt<=0){
 			game.$currentState().addEntity(new TracerDot(game,x,y,1,fade,1));
 			dtt+=1.0/60;
 		}
-		t+=dt;
+		//*/
+		//t+=dt;
 	}
 	
 	// x1, y1, x2, y2 line render
@@ -87,6 +113,7 @@ public class AntiMatterMissile extends Projectile{
 		GL11.glEnd();
 		GL11.glPopMatrix();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		//CharGraphics.drawString(String.format("%.1f %.1f %.1f %.1f",tdlx,tdly,x,y), c.$cx(x), c.$cy(y), 1f);
 		
 	}
 

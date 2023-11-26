@@ -2,10 +2,11 @@ package stardust.entities.asteroids;
 
 import org.lwjgl.opengl.GL11;
 
-import stardust.StardustGame;
-import stardust.entities.StardustEntity;
 import engine.Vector;
 import engine.gfx.Camera;
+import stardust.StardustGame;
+import stardust.entities.PlayerStarfighter;
+import stardust.entities.StardustEntity;
 
 public class DumbBogey extends StardustEntity{
 	
@@ -80,6 +81,8 @@ public class DumbBogey extends StardustEntity{
 	}
 
 	public void onDeath() {
-		
+		if(killer instanceof PlayerStarfighter || killer instanceof ClassicPlayerSpaceship){
+			game.$currentState().addEntity(new PowerClassicProjectile(game, x, y, (StardustEntity) killer));
+		}
 	}
 }
