@@ -7,16 +7,28 @@ import engine.Vector;
 import engine.gfx.Camera;
 import engine.sfx.Audio;
 
-public class AntiMatterBomb extends Projectile{
+public class PowerBomb extends Projectile{
 
-	public AntiMatterBomb(StardustGame game, double t, StardustEntity owner) {
+	public PowerBomb(StardustGame game, double t, StardustEntity owner) {
 		super(game, owner.$x(), owner.$y(), t, 160, 160, owner);
-		setBoundRadius(1.5);
-		Audio.addSoundEffect("fire-blaster", 1);
+		setBoundRadius(2.5);
+		game.$currentState().addEntity(new Explosion(game, x, y, 16));
+		Audio.addSoundEffect("fire-energy", 0.75f);
+		Audio.addSoundEffect("fire-bomb", 1);
 	}
 	
 	private double dtt=0;
 	public void update(double dt) {
+		// slow to dead stop,
+		// drop range on stop to trigger death
+		speed-=80*dt;
+		setSpeedVector(t, speed);
+		if(speed>40) {
+			range=9001;
+		} else {
+			range=-1;
+		}
+		
 		super.update(dt);
 		blip();
 		
@@ -26,17 +38,19 @@ public class AntiMatterBomb extends Projectile{
 			double di=game.$prng().$double(0, r*0.25);
 			double dx=Vector.vectorToDx(tt, di);
 			double dy=Vector.vectorToDy(tt, di);
-			game.$currentState().addEntity(new TracerDot(game,x+dx,y+dy,game.$prng().$double(1, 3),this.alpha,2,game.$prng().$int(4, 8)));
+			game.$currentState().addEntity(new PowerBombTracerDot(game,x+dx,y+dy,game.$prng().$double(r*0.5, r*2)));
 			dtt+=1.0/60;
 		}
-		t+=dt;
+		//t+=dt;
 	}
 
 	public void render(Camera c) {
-		setRadarColor(fade);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glPushMatrix();
 		GL11.glTranslated(c.$cx(x), c.$cy(y), 0);
+		
+		GL11.glColor4d(1, 1, 1, 1);
+		
 		GL11.glBegin(GL11.GL_LINES);
 		int seg=8;
 		double ci=2*Math.PI;
@@ -55,7 +69,7 @@ public class AntiMatterBomb extends Projectile{
 	}
 
 	public void onDeath() {
-		game.$currentState().addEntity(new AntiMatterExplosion(game, x, y, owner));
+		game.$currentState().addEntity(new PowerBombExplosion(game, x, y, owner));
 	}
 
 	protected void onImpactWith(StardustEntity e) {

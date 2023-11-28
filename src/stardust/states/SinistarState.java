@@ -10,7 +10,7 @@ import engine.entities.Point;
 import engine.gfx.Camera;
 import engine.sfx.Audio;
 import stardust.StardustGame;
-import stardust.entities.AntiMatterExplosion;
+import stardust.entities.PowerBombExplosion;
 import stardust.entities.Asteroid;
 import stardust.entities.ElectromagneticPulse;
 import stardust.entities.PlayerStarfighter;
@@ -128,7 +128,7 @@ public class SinistarState extends StardustState{
 			//for(double i=0;i<ci-cis;i+=cis){
 			//	game.$currentState().addEntity(new RadiantProjectile(game, i, boss));
 			//}
-			StardustEntity pulse=new AntiMatterExplosion(game, boss.$x(), boss.$y(), boss);
+			StardustEntity pulse=new PowerBombExplosion(game, boss.$x(), boss.$y(), boss);
 			targetable.addEntity(pulse);
 			spawned=1;
 		}

@@ -83,7 +83,6 @@ public class StardustGame extends Game{
 		GameFlags.setFlag("goto-portal", 1);
 		GameFlags.setFlag("flash-hiscore", 0);
 		
-		GameFlags.setFlag("initial-startup", 1);
 		GameFlags.setFlag("warp", 0);
 		GameFlags.setFlag("success", 0);
 		GameFlags.setFlag("player-x", 0);
@@ -112,6 +111,7 @@ public class StardustGame extends Game{
 		Audio.loadWavData("fire-blaster", 1, 0.8f);
 		Audio.loadWavData("fire-blasterlow", 1, 0.8f);
 		Audio.loadWavData("fire-bogey", 1, 0.8f);
+		Audio.loadWavData("fire-bomb", 1, 1);
 		Audio.loadWavData("fire-energy", 1, 1);
 		Audio.loadWavData("fire-gradius", 1, 1);
 		Audio.loadWavData("fire-halo", 1, 1);
@@ -239,6 +239,7 @@ public class StardustGame extends Game{
 		State.addState(28, new PongState(this));
 		State.addState(29, new LoopingSpaceInvadersState(this));
 		
+		GameFlags.setFlag("initial-startup", 1);
 		Audio.enableBackgroundMusic(true);
 		State.setCurrentState(-1);
 		State.$currentState().reset();

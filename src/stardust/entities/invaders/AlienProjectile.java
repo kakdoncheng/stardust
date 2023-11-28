@@ -27,7 +27,7 @@ public class AlienProjectile extends Projectile{
 	
 	public void update(double dt) {
 		super.update(dt);
-		blip();
+		this.alpha=1;
 	}
 
 	private double[][] l={

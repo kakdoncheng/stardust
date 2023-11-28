@@ -1,18 +1,20 @@
 package stardust.states;
 
-import stardust.StardustGame;
-import stardust.entities.Asteroid;
-import stardust.entities.ElectromagneticPulse;
-import stardust.entities.Explosion;
-import stardust.entities.StardustEntity;
-import stardust.entities.luna.Luna;
-import stardust.entities.luna.PlayerLunarModule;
-import stardust.gfx.CharGraphics;
 import engine.GameFlags;
 import engine.State;
 import engine.Vector;
 import engine.gfx.Camera;
 import engine.sfx.Audio;
+import stardust.StardustGame;
+import stardust.entities.Asteroid;
+import stardust.entities.ElectromagneticPulse;
+import stardust.entities.Explosion;
+import stardust.entities.IndicatorEmergencyLanding;
+import stardust.entities.IndicatorLowFuel;
+import stardust.entities.StardustEntity;
+import stardust.entities.luna.Luna;
+import stardust.entities.luna.PlayerLunarModule;
+import stardust.gfx.CharGraphics;
 
 public class LunarState extends StardustState{
 
@@ -27,6 +29,7 @@ public class LunarState extends StardustState{
 	private double bgT;
 	private double debrisdt;
 	private double delay;
+	private char[] dis;
 	
 	// entities
 	private PlayerLunarModule player;
@@ -55,12 +58,16 @@ public class LunarState extends StardustState{
 		// orbit
 		player.setSpeedVector(t, gF*gF);
 		player.setXY(Vector.vectorToDx(t+Math.PI*1.5, dist), Vector.vectorToDy(t+Math.PI*1.5, dist));
+		particles.addEntity(new IndicatorLowFuel(game, player, true));
 		
 		moon=new Luna(game);
+		particles.addEntity(new IndicatorEmergencyLanding(game, moon, true));
 		
 		targetable.addEntity(player);
 		targetable.addEntity(moon);
 		//ec.addEntity(new FlashingDefendIndicator(game, moon, true));
+		
+		dis=String.format("0.%05d", player.$fuel()).toCharArray();
 	}
 
 	public void update(double dt) {
@@ -151,6 +158,11 @@ public class LunarState extends StardustState{
 				game.$currentState().reset();
 			}
 		}
+		
+		// fuel meter
+		if(player!=null) {
+			dis=String.format("0.%05d", player.$fuel()).toCharArray();
+		}
 	}
 
 	public void render(Camera c) {
@@ -164,12 +176,32 @@ public class LunarState extends StardustState{
 		targetable.render(c);
 		particles.render(c);
 		
+		// fuel meter replacing score
+		if(GameFlags.is("score")){
+			String s="";
+			for(char ch:dis){
+				//s+=ch+"";
+				if(ch=='0'){
+					s+=game.$prng().$string(1);
+				}else{
+					s+=ch+"";
+				}
+			}
+			CharGraphics.drawHeaderString(String.format("%s",s),
+					(-game.$displayWidth()/2)+18,
+					(-game.$displayHeight()/2)+18,
+					1);
+		}
+		
+		// obfuscated score
+		/*
 		if(GameFlags.is("score")){
 			CharGraphics.drawHeaderString(game.$obfScore(),
 					(-game.$displayWidth()/2)+18,
 					(-game.$displayHeight()/2)+18,
 					1);
 		}
+		//*/
 		
 		//if(GameFlags.is("debugfps")){
 		//	CharGraphics.drawString(String.format("%.1f",Vector.distanceFromTo(moon.$x(), moon.$y(), player.$x(), player.$y())), 

@@ -23,8 +23,4 @@ public class PowerLascannon extends Power{
 		}
 		return false;
 	}
-	public void useSecondary(StardustEntity owner){
-		ammo=0;
-		game.$currentState().addEntity(new AntiMatterBomb(game, owner.$t(), owner));
-	}
 }

@@ -71,12 +71,16 @@ public abstract class StardustState extends State{
 	// transitions
 	private ArrayList<String> bgt;
 	private int bgti;
+	private boolean rbgt=false;
 	protected void clearBackgroundText(){
 		bgt.clear();
 		bgt.add("");
 		bgti=0;
 	}
 	protected void updateBackgroundText(){
+		if(!rbgt) {
+			return;
+		}
 		bgt.set(bgti, game.$prng().$string(8)+" "+game.$prng().$string(game.$prng().$int(1, 80)));
 		bgt.add(game.$prng().$string(8)+" ");
 		bgti++;
@@ -87,6 +91,9 @@ public abstract class StardustState extends State{
 		}
 	}
 	protected void renderBackgroundText(){
+		if(!rbgt) {
+			return;
+		}
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glLoadIdentity();

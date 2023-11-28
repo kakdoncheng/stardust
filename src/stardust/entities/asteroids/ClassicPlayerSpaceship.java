@@ -108,33 +108,44 @@ public class ClassicPlayerSpaceship extends StardustEntity{
     		cooldown=0;
     	}
     	
-    	// hyperspace jump
-		error-=error*dt*0.5;
+    	
+    	// blink error
+    	error-=error*dt*0.5;
 		if(error<0){
 			error=0;
 		}
-    	if(game.isBulletTimeActive()){
-    		if(Mouse.isButtonDown(1)){
-    			if(click){
-    				click=false;
-    				//game.$currentState().addEntity(new ElectromagneticPulse(game, x, y));
-    				game.$currentState().addEntity(new Explosion(game, x, y, 24));
-    				double tx=MouseHandler.$mx();
-    				double ty=MouseHandler.$my();
-    				if(error>0){
-    					double et=game.$prng().$double(0, 2*Math.PI);
-        				double ed=game.$prng().$double(0, error);
-        				tx+=Vector.vectorToDx(et, ed);
-        				ty+=Vector.vectorToDy(et, ed);
-    				}
-    				setXY(tx, ty);
-    				game.$currentState().addEntity(new Explosion(game, x, y, 8));
-    				error+=36;
-    			}
-    		}else{
-    			click=true;
+    	if(Keyboard.isKeyDown(Keyboard.KEY_S)) {
+    		// panic blink
+    		if(click){
+				click=false;
+				double hw=game.$displayWidth()/2;
+				double hh=game.$displayHeight()/2;
+				double dx=game.$prng().$double(-hw, hw);
+				double dy=game.$prng().$double(-hh, hh);
+				game.$currentState().addEntity(new Explosion(game, x, y, 24));
+				setXY(game.$camera().$dx()+dx, game.$camera().$dy()+dy);
+				game.$currentState().addEntity(new Explosion(game, x, y, 8));
     		}
-    	}
+    	}else if(game.isBulletTimeActive() && Mouse.isButtonDown(1)){
+    		// focused blink
+			if(click){
+				click=false;
+				game.$currentState().addEntity(new Explosion(game, x, y, 24));
+				double tx=MouseHandler.$mx();
+				double ty=MouseHandler.$my();
+				if(error>0){
+					double et=game.$prng().$double(0, 2*Math.PI);
+    				double ed=game.$prng().$double(0, error);
+    				tx+=Vector.vectorToDx(et, ed);
+    				ty+=Vector.vectorToDy(et, ed);
+				}
+				setXY(tx, ty);
+				game.$currentState().addEntity(new Explosion(game, x, y, 8));
+				error+=36;
+			}
+		} else {
+			click=true;
+		}
     	
     	// check for collisions
     	if(isCollidable()){

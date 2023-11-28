@@ -31,8 +31,8 @@ public class TracerDot extends StardustEntity{
 		this.seg=seg;
 	}
 	
-	private double ds;
-	private int seg=8;
+	protected double ds;
+	protected int seg=8;
 	
 	public void update(double dt) {
 		updateBlip(dt);

@@ -1,5 +1,10 @@
 package stardust.states;
 
+import engine.GameFlags;
+import engine.State;
+import engine.Vector;
+import engine.gfx.Camera;
+import engine.sfx.Audio;
 import stardust.StardustGame;
 import stardust.entities.ElectromagneticPulse;
 import stardust.entities.IndicatorDestroy;
@@ -9,11 +14,6 @@ import stardust.entities.asteroids.ClassicAsteroid;
 import stardust.entities.asteroids.ClassicPlayerSpaceship;
 import stardust.entities.asteroids.DumbBogey;
 import stardust.gfx.CharGraphics;
-import engine.GameFlags;
-import engine.State;
-import engine.Vector;
-import engine.gfx.Camera;
-import engine.sfx.Audio;
 
 public class AsteroidsState extends StardustState{
 
@@ -64,6 +64,7 @@ public class AsteroidsState extends StardustState{
 					player.$x()+Vector.vectorToDx(t,dlim),
 					player.$y()+Vector.vectorToDy(t,dlim),
 					24);
+			particles.addEntity(new IndicatorDestroy(game, de, true));
 			targetable.addEntity(de);
 		}
 	}

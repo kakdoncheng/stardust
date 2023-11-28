@@ -126,6 +126,7 @@ public class PortalScreen extends StardustState{
 
 	// internal flags/var
 	private double ft;
+	private boolean delay;
 	
 	// dynamic title
 	private int ti;
@@ -137,21 +138,18 @@ public class PortalScreen extends StardustState{
 	private StardustEntity player;
 	
 	public void reset() {
+		delay=false;
 		Audio.clearBackgroundMusicQueue();
 		Audio.clearBackgroundMusic();
 		if(GameFlags.is("initial-startup")) {
 			GameFlags.setFlag("initial-startup", 0);
+			delay=true;
 			Audio.queueBackgroundMusic("lifelike-126735/begin");
-			Audio.queueBackgroundMusic("lifelike-126735/loop-1");
-			Audio.queueBackgroundMusic("lifelike-126735/loop-1");
-			Audio.queueBackgroundMusic("lifelike-126735/loop-2");
 		} else {
 			double rnd=game.$prng().$double(0, 1);
 			if(rnd<0.4) {
+				delay=true;
 				Audio.queueBackgroundMusic("lifelike-126735/begin");
-				Audio.queueBackgroundMusic("lifelike-126735/loop-1");
-				Audio.queueBackgroundMusic("lifelike-126735/loop-1");
-				Audio.queueBackgroundMusic("lifelike-126735/loop-2");
 			} else if(rnd<0.8) {
 				Audio.queueBackgroundMusic("password-infinity-123276/intro");
 				Audio.queueBackgroundMusic("password-infinity-123276/loop-1");
@@ -219,6 +217,11 @@ public class PortalScreen extends StardustState{
 				ti++;
 			} else {
 				ti=game.$prng().$int(0, titles.size());
+			}
+			if(delay) {
+				Audio.queueBackgroundMusic("lifelike-126735/loop-1");
+				Audio.queueBackgroundMusic("lifelike-126735/loop-1");
+				Audio.queueBackgroundMusic("lifelike-126735/loop-2");
 			}
 			GameFlags.setFlag("success", 1);
 			GameFlags.setFlag("player-x", (int)player.$x());

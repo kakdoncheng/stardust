@@ -8,8 +8,8 @@ import engine.Vector;
 import engine.gfx.Camera;
 import engine.sfx.Audio;
 
-public class AntiMatterExplosion extends StardustEntity{
-	public AntiMatterExplosion(StardustGame game, double x, double y, StardustEntity owner) {
+public class PowerBombExplosion extends StardustEntity{
+	public PowerBombExplosion(StardustGame game, double x, double y, StardustEntity owner) {
 		super(game);
 		setXY(x, y);
 		setBoundRadius(0);

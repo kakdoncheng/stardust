@@ -26,6 +26,10 @@ public class PlayerLunarModule extends StardustEntity{
 	private double aF=100;
 	private double cooldown=1;
 	private double invt=3;
+	private double fuel=1000;
+	public int $fuel() {
+		return (int)fuel;
+	}
 	
 	private boolean input=false;
 	private boolean frozen=false;
@@ -62,7 +66,10 @@ public class PlayerLunarModule extends StardustEntity{
     	
     	// thrusters vector
     	if (Keyboard.isKeyDown(Keyboard.KEY_W) || Mouse.isButtonDown(0)) {
-    		applyAccelerationVector(t, -aF, dt);
+    		if(fuel>0) {
+    			applyAccelerationVector(t, -aF, dt);
+    			fuel-=dt*160;
+    		}
     	}
 		
 		//radar blip

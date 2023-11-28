@@ -1,7 +1,6 @@
 package stardust.entities.invaders;
 
 import stardust.StardustGame;
-import stardust.entities.AntiMatterBomb;
 import stardust.entities.Power;
 import stardust.entities.StardustEntity;
 
@@ -22,9 +21,5 @@ public class PowerAlienProjectile extends Power{
 			return true;
 		}
 		return false;
-	}
-	public void useSecondary(StardustEntity owner){
-		ammo=0;
-		game.$currentState().addEntity(new AntiMatterBomb(game, owner.$t(), owner));
 	}
 }

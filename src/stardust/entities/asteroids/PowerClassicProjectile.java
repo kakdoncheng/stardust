@@ -1,7 +1,6 @@
 package stardust.entities.asteroids;
 
 import stardust.StardustGame;
-import stardust.entities.AntiMatterBomb;
 import stardust.entities.Power;
 import stardust.entities.StardustEntity;
 import stardust.states.EndlessState;
@@ -28,10 +27,6 @@ public class PowerClassicProjectile extends Power{
 			return true;
 		}
 		return false;
-	}
-	public void useSecondary(StardustEntity owner){
-		ammo=0;
-		game.$currentState().addEntity(new AntiMatterBomb(game, owner.$t(), owner));
 	}
 	
 	private boolean wild;

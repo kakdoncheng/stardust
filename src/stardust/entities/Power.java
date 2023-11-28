@@ -46,7 +46,7 @@ public class Power extends StardustEntity{
 			return;
 		}
 		ammo=0;
-		game.$currentState().addEntity(new AntiMatterBomb(game, owner.$t(), owner));
+		game.$currentState().addEntity(new PowerBomb(game, owner.$t(), owner));
 	}
 	
 	public void update(double dt) {
