@@ -1,22 +1,37 @@
 package stardust.unused;
 
+import java.util.ArrayList;
+
+import engine.GameFlags;
+import engine.gfx.Camera;
+import engine.sfx.Audio;
 import stardust.StardustGame;
+import stardust.entities.Explosion;
 import stardust.entities.IndicatorDestroy;
 import stardust.entities.RadarScan;
+import stardust.entities.Spark;
 import stardust.entities.StardustEntity;
 import stardust.entities.invaders.AlienFormation;
+import stardust.entities.invaders.BlastShield;
+import stardust.entities.invaders.BlastShieldBit;
 import stardust.entities.invaders.ClassicAlienFormation;
 import stardust.entities.invaders.Ufo;
 import stardust.gfx.CharGraphics;
 import stardust.states.StardustState;
-import engine.GameFlags;
-import engine.gfx.Camera;
 
 public class LoopingSpaceInvadersState extends StardustState{
 
 	public LoopingSpaceInvadersState(StardustGame game) {
 		super(game);
 		reset();
+	}
+
+	public void addEntity(StardustEntity e){
+		if(e instanceof Spark || e instanceof Explosion || e instanceof BlastShieldBit){
+			particles.addEntity(e);
+		}else{
+			targetable.addEntity(e);
+		}
 	}
 
 	// internal flags/var
@@ -31,12 +46,17 @@ public class LoopingSpaceInvadersState extends StardustState{
 	private AlienFormation swarm;
 	private StardustEntity player;
 	private RadarScan rc;
+	private ArrayList<BlastShield> shields;
 	
 	public void reset() {
+		Audio.clearBackgroundMusicQueue();
+		Audio.clearBackgroundMusic();
 		GameFlags.setFlag("warp", 1);
 		clearBackgroundText();
 		targetable.clear();
 		targetable.setRenderDistance(StardustGame.BOUNDS);
+		particles.clear();
+		particles.setRenderDistance(StardustGame.BOUNDS);
 		game.$camera().hardCenterOnPoint(0, 0);
 		bgT=0;
 		
@@ -45,25 +65,35 @@ public class LoopingSpaceInvadersState extends StardustState{
 		ufodt=4;
 		//adl=128;
 		delay=1;
+		gsfx=true;
 		
+		// player ship & aliens
 		rc=new RadarScan(game, 0, 0);
 		player=new DemoCannon(game, 0, 144);
-		swarm=new ClassicAlienFormation(game,0,-100);
-		
-		//rc.deactivate();
-		
 		rc.lockOnEntity(player);
+		swarm=new ClassicAlienFormation(game,0,-100);
 		swarm.setTarget(player);
-		
 		targetable.addEntity(player);
 		targetable.addEntity(swarm);
+		
+		// blast shields
+		shields=new ArrayList<BlastShield>();
+		shields.add(new BlastShield(game, -90, 110));
+		shields.add(new BlastShield(game, -30, 110));
+		shields.add(new BlastShield(game, 30, 110));
+		shields.add(new BlastShield(game, 90, 110));
 	}
 
+	private boolean gsfx;
 	public void update(double dt) {
 		if(bgT<0.5){
 			bgT+=dt;
 			updateBackgroundText();
 			game.hideStardust();
+			if(gsfx) {
+				Audio.playSoundEffect("glitch-1", 1, 1);
+				gsfx=false;
+			}
 			return;
 		}
 		
@@ -86,8 +116,15 @@ public class LoopingSpaceInvadersState extends StardustState{
 		}
 		
 		targetable.update(dt);
+		particles.update(dt);
+
 		if(rc.isActive()){
 			rc.update(dt);
+		}
+		
+		// resolve shield collisions
+		for(BlastShield shield:shields) {
+			shield.resolveCollisionsWith(targetable.$entities());
 		}
 		
 		// tag last alien
@@ -104,11 +141,6 @@ public class LoopingSpaceInvadersState extends StardustState{
 			}
 			delay-=dt;
 			if(delay<=0){
-				if(!GameFlags.is("goto-portal")){
-					//State.setCurrentState(0);
-				}else{
-					//State.setCurrentState(-1);
-				}
 				game.$currentState().reset();
 			}
 		}
@@ -125,6 +157,8 @@ public class LoopingSpaceInvadersState extends StardustState{
 		}
 		
 		targetable.render(c);
+		particles.render(c);
+		
 		if(rc.isActive()){
 			rc.render(c);
 		}

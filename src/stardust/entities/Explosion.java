@@ -42,9 +42,7 @@ public class Explosion extends StardustEntity{
 			return;
 		}
 		updateBlip(dt);
-		if(r<dr){
-			r+=dr*dt;
-		}
+		r+=dr*dt;
 		if(r>dr){
 			deactivate();
 		}

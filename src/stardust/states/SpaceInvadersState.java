@@ -1,24 +1,38 @@
 package stardust.states;
 
-import stardust.StardustGame;
-import stardust.entities.ElectromagneticPulse;
-import stardust.entities.IndicatorDestroy;
-import stardust.entities.StardustEntity;
-import stardust.entities.invaders.AlienFormation;
-import stardust.entities.invaders.ClassicAlienFormation;
-import stardust.entities.invaders.PlayerCannon;
-import stardust.entities.invaders.Ufo;
-import stardust.gfx.CharGraphics;
+import java.util.ArrayList;
+
 import engine.GameFlags;
 import engine.State;
 import engine.gfx.Camera;
 import engine.sfx.Audio;
+import stardust.StardustGame;
+import stardust.entities.ElectromagneticPulse;
+import stardust.entities.Explosion;
+import stardust.entities.IndicatorDestroy;
+import stardust.entities.Spark;
+import stardust.entities.StardustEntity;
+import stardust.entities.invaders.AlienFormation;
+import stardust.entities.invaders.BlastShield;
+import stardust.entities.invaders.BlastShieldBit;
+import stardust.entities.invaders.ClassicAlienFormation;
+import stardust.entities.invaders.PlayerCannon;
+import stardust.entities.invaders.Ufo;
+import stardust.gfx.CharGraphics;
 
 public class SpaceInvadersState extends StardustState{
 
 	public SpaceInvadersState(StardustGame game) {
 		super(game);
 		reset();
+	}
+	
+	public void addEntity(StardustEntity e){
+		if(e instanceof Spark || e instanceof Explosion || e instanceof BlastShieldBit){
+			particles.addEntity(e);
+		}else{
+			targetable.addEntity(e);
+		}
 	}
 
 	// internal flags/var
@@ -32,6 +46,7 @@ public class SpaceInvadersState extends StardustState{
 	private StardustEntity ufo;
 	private AlienFormation swarm;
 	private StardustEntity player;
+	private ArrayList<BlastShield> shields;
 	
 	public void reset() {
 		Audio.clearBackgroundMusicQueue();
@@ -52,13 +67,19 @@ public class SpaceInvadersState extends StardustState{
 		delay=1;
 		gsfx=true;
 		
+		// player ship & aliens
 		player=new PlayerCannon(game, 0, 144);
 		swarm=new ClassicAlienFormation(game,0,-100);
-		
 		swarm.setTarget(player);
-		
 		targetable.addEntity(player);
 		targetable.addEntity(swarm);
+		
+		// blast shields
+		shields=new ArrayList<BlastShield>();
+		shields.add(new BlastShield(game, -90, 110));
+		shields.add(new BlastShield(game, -30, 110));
+		shields.add(new BlastShield(game, 30, 110));
+		shields.add(new BlastShield(game, 90, 110));
 	}
 
 	private boolean gsfx;
@@ -94,6 +115,11 @@ public class SpaceInvadersState extends StardustState{
 		
 		targetable.update(dt);
 		particles.update(dt);
+		
+		// resolve shield collisions
+		for(BlastShield shield:shields) {
+			shield.resolveCollisionsWith(targetable.$entities());
+		}
 		
 		// tag last alien
 		if(swarm.$lastAlien()!=null&&!tagged){

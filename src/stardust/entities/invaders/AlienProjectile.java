@@ -2,13 +2,12 @@ package stardust.entities.invaders;
 
 import org.lwjgl.opengl.GL11;
 
+import engine.Vector;
+import engine.gfx.Camera;
 import stardust.StardustGame;
 import stardust.entities.Explosion;
 import stardust.entities.Projectile;
 import stardust.entities.StardustEntity;
-import engine.Vector;
-import engine.gfx.Camera;
-import engine.sfx.Audio;
 
 public class AlienProjectile extends Projectile{
 
@@ -18,7 +17,7 @@ public class AlienProjectile extends Projectile{
 		ox=owner.$x();
 		oy=owner.$y();
 		ai=game.$prng().$int(0, 2);
-		Audio.addSoundEffect("fire-bogey", 1);
+		//Audio.addSoundEffect("fire-bogey", 1);
 	}
 	
 	private double ox;

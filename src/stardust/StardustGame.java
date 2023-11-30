@@ -47,7 +47,7 @@ import engine.sfx.Audio;
 public class StardustGame extends Game{
 	
 	public static final String credits="Game Design, Programming, & Art: Linh-Han Van 01.01.2022";
-	public static final String version="v0.3.0+20221126";
+	public static final String version="v0.3.0+20221128";
 	
 	public StardustGame() {
 		super(0, 0, "Stardust");
@@ -132,10 +132,10 @@ public class StardustGame extends Game{
 		Audio.loadWavData("blip", 1, 1);
 		Audio.loadWavData("pongf4", 1, 1);
 		Audio.loadWavData("pongf5", 1, 1);
-		Audio.loadWavData("invaders-a", 1, 64);
-		Audio.loadWavData("invaders-b", 1, 64);
-		Audio.loadWavData("invaders-c", 1, 64);
-		Audio.loadWavData("invaders-d", 1, 64);
+		Audio.loadWavData("invaders-a", 1, 1);
+		Audio.loadWavData("invaders-b", 1, 1);
+		Audio.loadWavData("invaders-c", 1, 1);
+		Audio.loadWavData("invaders-d", 1, 1);
 		Audio.loadWavData("glitch-1", 1, 1);
 		
 		// bgm

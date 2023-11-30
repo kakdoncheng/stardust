@@ -3,7 +3,7 @@ package stardust.entities.invaders;
 import stardust.StardustGame;
 
 public class SmallAlienFormation extends AlienFormation{
-	private static int[][] rank={
+	private static int[][] mask={
 			{1,1,1,1,1},
 			{2,2,2,2,2},
 			{2,2,2,2,2},
@@ -11,6 +11,6 @@ public class SmallAlienFormation extends AlienFormation{
 			{3,3,3,3,3},
 	};
 	public SmallAlienFormation(StardustGame game, double x, double y) {
-		super(game, x, y, rank);
+		super(game, x, y, mask);
 	}
 }

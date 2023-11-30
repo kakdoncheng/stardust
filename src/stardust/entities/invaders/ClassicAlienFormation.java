@@ -4,7 +4,7 @@ import stardust.StardustGame;
 
 public class ClassicAlienFormation extends AlienFormation{
 	///*
-	private static int[][] rank={
+	private static int[][] mask={
 			{1,1,1,1,1,1,1,1,1,1,1},
 			{2,2,2,2,2,2,2,2,2,2,2},
 			{2,2,2,2,2,2,2,2,2,2,2},
@@ -25,7 +25,7 @@ public class ClassicAlienFormation extends AlienFormation{
 	};
 	//*/
 	public ClassicAlienFormation(StardustGame game, double x, double y) {
-		super(game, x, y, rank);
+		super(game, x, y, mask);
 	}
 
 }

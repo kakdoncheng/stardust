@@ -17,29 +17,29 @@ public abstract class AlienFormation extends StardustEntity{
 		return 100;
 	}
 	
-	public AlienFormation(StardustGame game, double x, double y, int[][] rank) {
+	public AlienFormation(StardustGame game, double x, double y, int[][] mask) {
 		super(game);
 		setXY(x,y);
 		setBoundRadius(adl);
 		
 		aliens=new ArrayList<Alien>();
-		alienr=new Alien[rank.length][rank[0].length];
-		for(int dy=0;dy<rank.length;dy++){
-			for(int dx=0;dx<rank[dy].length;dx++){
+		alienr=new Alien[mask.length][mask[0].length];
+		for(int dy=0;dy<mask.length;dy++){
+			for(int dx=0;dx<mask[dy].length;dx++){
 				double ddx=(double)dx*pad;
 				double ddy=(double)dy*pad;
 				Alien a;
-				if(rank[dy][dx]==1){
+				if(mask[dy][dx]==1){
 					a=new AlienTypeIka(game,0,0);
-				}else if(rank[dy][dx]==2){
+				}else if(mask[dy][dx]==2){
 					a=new AlienTypeKani(game,0,0);
 				}else{
 					a=new AlienTypeKura(game,0,0);
 				}
-				a.setXY(ddx+x-(pad*0.5*(rank[dy].length-1)), ddy+y-(pad*0.5*(rank.length-1)));
+				a.setXY(ddx+x-(pad*0.5*(mask[dy].length-1)), ddy+y-(pad*0.5*(mask.length-1)));
 				aliens.add(a);
 				alienr[dy][dx]=a;
-				if(rank[dy][dx]>0){
+				if(mask[dy][dx]>0){
 					game.$currentState().addEntity(a);
 				}else{
 					a.deactivate();
@@ -168,13 +168,13 @@ public abstract class AlienFormation extends StardustEntity{
 			
 			// add sfx
 			if(sfxi<1) {
-				Audio.playSoundEffect("invaders-a", 1, -1);
+				Audio.playSoundEffect("invaders-a", 0.25f, -1);
 			} else if(sfxi<2) {
-				Audio.playSoundEffect("invaders-b", 1, -1);
+				Audio.playSoundEffect("invaders-b", 0.25f, -1);
 			} else if(sfxi<3) {
-				Audio.playSoundEffect("invaders-c", 1, -1);
+				Audio.playSoundEffect("invaders-c", 0.25f, -1);
 			} else {
-				Audio.playSoundEffect("invaders-d", 1, -1);
+				Audio.playSoundEffect("invaders-d", 0.25f, -1);
 			}
 			sfxi+=1;
 			sfxi%=4;
