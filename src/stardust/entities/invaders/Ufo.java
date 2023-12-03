@@ -11,7 +11,7 @@ import stardust.entities.StardustEntity;
 public class Ufo extends StardustEntity{
 	
 	public int points(){
-		return 25;
+		return 50*game.$prng().$int(1, 7);
 	}
 	
 	public Ufo(StardustGame game, double x, double y) {

@@ -1,12 +1,11 @@
 package stardust.entities;
 
-import engine.Vector;
-import engine.gfx.Camera;
-import engine.input.MouseHandler;
-
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import engine.Vector;
+import engine.gfx.Camera;
+import engine.input.MouseHandler;
 import stardust.StardustGame;
 import stardust.gfx.VectorGraphics;
 
@@ -62,8 +61,39 @@ public class PortalScreenPlayer extends StardustEntity{
 		t=Vector.directionFromTo(x, y, MouseHandler.$mx(), MouseHandler.$my());
 		rc.update(dt);
 	}
+	
+	// starfighter type a
+	/*
+	private double scale=2;
+	//private double[] cx={ 0, 1, 2, 5, 5, 2, 1, 1, 0,-1,-1,-2,-5,-5,-2,-1};
+	//private double[] cy={-2,-1,-2,-1, 0, 2, 5, 1, 3, 1, 5, 2, 0,-1,-2,-1};
+	private double[] cx={ 0, 1, 1, 2, 4, 4, 2, 1, 1, 0,-1,-1,-2,-4,-4,-2,-1,-1};
+	private double[] cy={-2,-1,-3,-1,-1, 0, 1, 2, 1, 5, 1, 2, 1, 0,-1,-1,-3,-1};
+	public void render(Camera c) {
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		
+		GL11.glPushMatrix();
+		GL11.glTranslatef(c.$cx(x), c.$cy(y), 0);	
+		GL11.glRotatef((float)Math.toDegrees(t), 0, 0, 1);
+		
+		GL11.glBegin(GL11.GL_LINES);
+		GL11.glColor4d(0,1,0,1);
+		//setRadarColor(1);
+		for(int i=0; i<cx.length; i++){
+			GL11.glVertex2d(cx[i]*c.$zoom()*scale, cy[i]*c.$zoom()*scale);
+			GL11.glVertex2d(cx[(i+1)%cx.length]*c.$zoom()*scale, cy[(i+1)%cx.length]*c.$zoom()*scale);
+		}
+		GL11.glEnd();
+		
+		GL11.glPopMatrix();
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		
+		//this.renderCollisionBounds(c, 8);
+	}
+	//*/
 
 	// 4xy render code
+	//*
 	private double scale=1.75;
 	private double l[]={
 		-1,0,0,2,0,2,1,0,1,0,1,4,1,4,2,1,2,1,5,-1,5,-1,5,-2,5,-2,2,-3,2,-3,1,-2,1,-2,0,-3,0,-3,-1,-2,-1,-2,-2,-3,-2,-3,-5,-2,-5,-2,-5,-1,-5,-1,-2,1,-2,1,-1,4,-1,4,-1,0,
@@ -89,6 +119,7 @@ public class PortalScreenPlayer extends StardustEntity{
 		VectorGraphics.renderDotCursor();
 		rc.render(c);
 	}
+	//*/
 
 	public boolean isCollidable(){
 		return false;

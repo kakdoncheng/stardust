@@ -84,7 +84,7 @@ public class BlastShieldBit extends StardustEntity {
 				if(bits[iiy][iix]==null || !bits[iiy][iix].isActive()) {
 					continue;
 				}
-				double threshold=Vector.distanceFromTo(ix, iy, iix, iiy)*0.4;
+				double threshold=Vector.distanceFromTo(ix, iy, iix, iiy)*0.334;
 				if(threshold<1) {
 					bits[iiy][iix].deactivate();
 				} else {

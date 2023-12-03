@@ -43,7 +43,7 @@ public class PortalScreen extends StardustState{
 		titles.add("constantly changing.");
 		titles.add("an endless sky.");
 		titles.add("act swiftly.");
-		titles.add("panic inspires death.");
+		titles.add("panic invites death.");
 		titles.add("fear inspires death.");
 		titles.add("a new beginning.");
 		titles.add("hear the silence.");

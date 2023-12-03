@@ -11,6 +11,15 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
+import engine.Game;
+import engine.GameFlags;
+import engine.State;
+import engine.Vector;
+import engine.entities.Entity;
+import engine.gfx.Camera;
+import engine.gfx.TextureLoader;
+import engine.input.MouseHandler;
+import engine.sfx.Audio;
 import stardust.entities.MouseProxy;
 import stardust.entities.Stardust;
 import stardust.entities.StardustEntity;
@@ -34,20 +43,11 @@ import stardust.states.TerraState;
 import stardust.unused.HeavyWeaponState;
 import stardust.unused.LoopingSpaceInvadersState;
 import stardust.unused.PongState;
-import engine.Game;
-import engine.GameFlags;
-import engine.State;
-import engine.Vector;
-import engine.entities.Entity;
-import engine.gfx.Camera;
-import engine.gfx.TextureLoader;
-import engine.input.MouseHandler;
-import engine.sfx.Audio;
 
 public class StardustGame extends Game{
 	
 	public static final String credits="Game Design, Programming, & Art: Linh-Han Van 01.01.2022";
-	public static final String version="v0.3.0+20221128";
+	public static final String version="v0.3.0+20221202";
 	
 	public StardustGame() {
 		super(0, 0, "Stardust");
@@ -192,6 +192,41 @@ public class StardustGame extends Game{
 		createDisplay();
 		TextureLoader.init();
 		CharGraphics.init();
+		
+		// set icon
+		// is broken
+		// uses 16x16, 32x32, and 128x128 pngs
+		// must load as buffered image then convert to byte buffer object
+		// http://forum.lwjgl.org/index.php?topic=6629.0
+		/*
+		ByteBuffer[] ico = new ByteBuffer[2];
+		BufferedImage[] img = new BufferedImage[2];
+		try {
+			img[0] = ImageIO.read(new File("./icon/icon-32.png"));
+			img[1] = ImageIO.read(new File("./icon/icon-16.png"));
+			for(int i=0;i<2;i++) {
+				BufferedImage image=img[i];
+				int[] pixels = new int[image.getWidth() * image.getHeight()];
+		        image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
+		        ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * 4);
+		        for (int y = 0; y < image.getHeight(); y++) {
+		            for (int x = 0; x < image.getWidth(); x++) {
+		                int pixel = pixels[y * image.getWidth() + x];
+		                buffer.put((byte) ((pixel >> 16) & 0xFF));
+		                buffer.put((byte) ((pixel >> 8) & 0xFF));
+		                buffer.put((byte) (pixel & 0xFF));
+		            }
+		        }
+		        buffer.flip();
+		        ico[i]=buffer;
+			}
+			Display.setIcon(ico);
+		} catch (IOException e) {
+			System.err.println("stardust.StardustGame: ERROR: Failed to load icons.");
+			e.printStackTrace();
+		}
+		//*/
+		
 		
 		// temp bloom
 		DISPLAY_BUFFER_ID_0=createDisplayBuffer();
