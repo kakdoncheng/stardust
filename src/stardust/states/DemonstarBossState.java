@@ -22,7 +22,7 @@ public class DemonstarBossState extends StardustState{
 	}
 
 	// internal flags/var
-	private String bname="Azulroth, the Firstborn";
+	private String bname="Prototype Dæmonstar";
 	private char[] dis;
 	private double disT;//, timer;
 	private int disi;

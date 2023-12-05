@@ -22,7 +22,7 @@ public class GradiusBossState extends StardustState{
 	}
 
 	// internal flags/var
-	private String bname="Baelruul, the Obiliterator";
+	private String bname="Low-Orbit Death Sentence";
 	private char[] dis;
 	private double disT;//, timer;
 	private int disi;
@@ -50,7 +50,7 @@ public class GradiusBossState extends StardustState{
 		particles.clear();
 		particles.setRenderDistance(StardustGame.BOUNDS);
 		
-		dis="*.*****                                ".toCharArray();
+		dis="*.*****                                     ".toCharArray();
 		timer=0;
 		disT=0;
 		disi=0;

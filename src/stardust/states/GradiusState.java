@@ -7,6 +7,7 @@ import stardust.StardustGame;
 import stardust.entities.ElectromagneticPulse;
 import stardust.entities.Explosion;
 import stardust.entities.IndicatorDestroy;
+import stardust.entities.Spark;
 import stardust.entities.StardustEntity;
 import stardust.entities.gradius.AntiGradiusProjectile;
 import stardust.entities.gradius.GradiusDroneSwarm;
@@ -38,6 +39,15 @@ public class GradiusState extends StardustState{
 	// entities
 	private StardustEntity player;
 	private ArrayList<StardustEntity> hostiles;
+	
+	// override for tracer dot
+	public void addEntity(StardustEntity e){
+		if(e instanceof Spark || e instanceof Explosion){
+			particles.addEntity(e);
+		}else{
+			targetable.addEntity(e);
+		}
+	}
 	
 	public void reset() {
 		GameFlags.setFlag("warp", 1);

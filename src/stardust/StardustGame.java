@@ -47,7 +47,7 @@ import stardust.unused.PongState;
 public class StardustGame extends Game{
 	
 	public static final String credits="Game Design, Programming, & Art: Linh-Han Van 01.01.2022";
-	public static final String version="v0.3.0+20221202";
+	public static final String version="v0.3.1+20221204";
 	
 	public StardustGame() {
 		super(0, 0, "Stardust");
@@ -137,6 +137,10 @@ public class StardustGame extends Game{
 		Audio.loadWavData("invaders-c", 1, 1);
 		Audio.loadWavData("invaders-d", 1, 1);
 		Audio.loadWavData("glitch-1", 1, 1);
+		
+		// sfx global priorities
+		Audio.setGlobalPriority("explosion-1", -1);
+		Audio.setGlobalPriority("explosion-2", -1);
 		
 		// bgm
 		// might need to dynamically load?

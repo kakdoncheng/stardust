@@ -16,10 +16,17 @@ public class Audio {
 	private static final float SFX_VOLUME_MULTIPLIER=0.8f;
 	private static final float BGM_VOLUME_MULTIPLIER=0.8f;
 	
+	private static HashMap<String, Integer> prio;
 	private static HashMap<String, AudioData> data;
 	private static HashMap<String, Float> sfxq;
 	private static AudioSource[] sfx;
 	private static int sfxi;
+	
+	public static void setGlobalPriority(String sfx, int priority) {
+		if(prio!=null) {
+			prio.put(sfx, priority);
+		}
+	}
 	
 	private static boolean bgmEnabled;
 	private static BackgroundMusicThread bgmt;
@@ -166,7 +173,13 @@ public class Audio {
 	}
 	public static void resolveSoundEffects(){
 		for(HashMap.Entry<String, Float> pair: sfxq.entrySet()){
-			playSoundEffect(pair.getKey(), pair.getValue());
+			String key=pair.getKey();
+			float volume=pair.getValue();
+			if(prio.containsKey(key)) {
+				playSoundEffect(key, volume, prio.get(key));
+			} else {
+				playSoundEffect(key, volume);
+			}
 		}
 		sfxq.clear();
 	}
@@ -260,6 +273,7 @@ public class Audio {
 		sfxi=0;
 		data=new HashMap<String, AudioData>();
 		sfxq=new HashMap<String, Float>();
+		prio=new HashMap<String, Integer>();
 		
 		// init bgm thread
 		bgmEnabled=false;
