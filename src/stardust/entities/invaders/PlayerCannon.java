@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL11;
 
 import stardust.StardustGame;
 import stardust.entities.ElectromagneticPulse;
+import stardust.entities.FloatingString;
 import stardust.entities.Power;
 import stardust.entities.RadarScan;
 import stardust.entities.StardustEntity;
@@ -84,6 +85,7 @@ public class PlayerCannon extends StardustEntity{
 			if(e instanceof Power){
 				if(distanceTo(e)<=r+e.$r()){
 					power=(Power)e;
+					game.$currentState().addEntity(new FloatingString(game, String.format("%s", power), e.$x(), e.$y()));
 					e.deactivate();
 				}
 				continue;

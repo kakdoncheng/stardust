@@ -51,8 +51,11 @@ public class PlayerStarfighter extends StardustEntity{
 		// power & invulnurable toggle
 		if(GameFlags.is("debug")){
 			if(Keyboard.isKeyDown(Keyboard.KEY_F)){
-				power=new PowerAlienProjectile(game,0,0,this);
-				//power=new PowerBulletHail(game,0,0,this);
+				if(power==null || power.isEmpty()) {
+					power=new PowerAlienProjectile(game,0,0,this);
+					game.$currentState().addEntity(new FloatingString(game, String.format("%s", power), x, y));
+				}
+				
 			}
 			if(Keyboard.isKeyDown(Keyboard.KEY_G)){
 				GameFlags.setFlag("debuginv", 0);
@@ -182,6 +185,7 @@ public class PlayerStarfighter extends StardustEntity{
 			if(e instanceof Power){
 				if(distanceTo(e)<=r+e.$r()){
 					power=(Power)e;
+					game.$currentState().addEntity(new FloatingString(game, String.format("%s", power), e.$x(), e.$y()));
 					e.deactivate();
 				}
 				continue;

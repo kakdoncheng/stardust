@@ -41,4 +41,8 @@ public class PowerAlienProjectile extends Power{
 		}
 		return false;
 	}
+	
+	public String toString() {
+		return "Pulse Cannon";
+	}
 }

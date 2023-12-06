@@ -23,4 +23,8 @@ public class PowerLascannon extends Power{
 		}
 		return false;
 	}
+	
+	public String toString() {
+		return "Mega Laser";
+	}
 }

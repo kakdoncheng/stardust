@@ -47,7 +47,7 @@ import stardust.unused.PongState;
 public class StardustGame extends Game{
 	
 	public static final String credits="Game Design, Programming, & Art: Linh-Han Van 01.01.2022";
-	public static final String version="v0.3.1+20221204";
+	public static final String version="v0.3.1+20221206";
 	
 	public StardustGame() {
 		super(0, 0, "Stardust");
@@ -427,7 +427,9 @@ public class StardustGame extends Game{
 		stage=0;
 		score=0;
 	}
-	public void addToScore(int points){
+	
+	// returns actual score added
+	public int addToScore(int points){
 		//score+=points*(stage+1);
 		int mod=stage;//stage-1;
 		if(mod<1){
@@ -437,6 +439,7 @@ public class StardustGame extends Game{
 		if(stage<levelUpReq.length && score>levelUpReq[stage]){
 			score=levelUpReq[stage];
 		}
+		return points*mod;
 	}
 	public String $score(){
 		if(flasht>0){

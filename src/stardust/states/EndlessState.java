@@ -6,6 +6,11 @@ import java.util.Iterator;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
+import engine.GameFlags;
+import engine.State;
+import engine.Vector;
+import engine.gfx.Camera;
+import engine.sfx.Audio;
 import stardust.StardustGame;
 import stardust.entities.ApolloLunarModule;
 import stardust.entities.ApolloServiceModule;
@@ -46,11 +51,6 @@ import stardust.entities.invaders.SmallAlienFormation;
 import stardust.entities.invaders.Ufo;
 import stardust.entities.terra.ReplicatingMine;
 import stardust.gfx.CharGraphics;
-import engine.GameFlags;
-import engine.State;
-import engine.Vector;
-import engine.gfx.Camera;
-import engine.sfx.Audio;
 
 public class EndlessState extends StardustState{
 
@@ -68,6 +68,7 @@ public class EndlessState extends StardustState{
 	private double vostokdt;
 	private double voyagerdt;
 	private double delay;
+	private double tscore;
 	
 	// focused entities
 	private StardustEntity player;
@@ -95,6 +96,7 @@ public class EndlessState extends StardustState{
 		lmb=false;
 		wt=0;
 		delay=1;
+		tscore=9001;
 		
 		lunar=null;
 		lunardt=3;
@@ -476,11 +478,18 @@ public class EndlessState extends StardustState{
 		particles.update(dt);
 		
 		// scoring
+		tscore+=dt;
 		for(StardustEntity e:targetable.$lastRemovedEntities()){
 			if(e.$killer()==player){
 				//double mult=1+(player.$speed()/200);
 				//game.addToScore((int)(e.points()*mult));
-				game.addToScore(e.points());
+				if(e.points()>0) {
+					tscore=0;
+					game.addToScore(e.points());
+					//int dscore=game.addToScore(e.points());
+					//this.addEntity(new FloatingString(game, String.format("%d", dscore), e.$x(), e.$y()));
+				}
+				
 			}
 		}
 		
@@ -513,16 +522,21 @@ public class EndlessState extends StardustState{
 		
 		// display score
 		if(GameFlags.is("score")){
-			CharGraphics.drawHeaderString(game.$score(),
-					(-game.$displayWidth()/2)+18,
-					(-game.$displayHeight()/2)+18,
-					1);
 			if(Keyboard.isKeyDown(Keyboard.KEY_TAB)){
+				tscore=9001;
 				CharGraphics.drawHeaderString(game.$hiscore(), //"ЛР лр"+
 						(-game.$displayWidth()/2)+18,
 						(-game.$displayHeight()/2)+(18*2)+10,
 						1);
 			}
+			double size=1.5-tscore;
+			if(size<1) {
+				size=1;
+			}
+			CharGraphics.drawHeaderString(game.$score(),
+					(-game.$displayWidth()/2)+18,
+					(-game.$displayHeight()/2)+18,
+					(float)size);
 		}
 		
 		// flashing warning

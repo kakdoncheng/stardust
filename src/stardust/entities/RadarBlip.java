@@ -1,10 +1,9 @@
 package stardust.entities;
 
-import engine.Vector;
-import engine.gfx.Camera;
-
 import org.lwjgl.opengl.GL11;
 
+import engine.Vector;
+import engine.gfx.Camera;
 import stardust.StardustGame;
 import stardust.gfx.VectorGraphics;
 
@@ -47,13 +46,19 @@ public class RadarBlip extends StardustEntity{
 	}
 
 	public void render(Camera c) {
+		// disable render lines
+		///*
+		double ratio=0.25+(1-(rr/range));
+		if(ratio>1) {
+			ratio=1;
+		}
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glBegin(GL11.GL_LINES);
-		setActualRadarColor(0.35*fade);
+		setActualRadarColor(0.25*fade*ratio);
 		VectorGraphics.renderVectorCircle(x, y, rr, 64, c);
 		GL11.glEnd();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		
+		//*/
 	}
 	
 	public boolean isCollidable(){

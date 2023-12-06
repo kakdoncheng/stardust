@@ -52,4 +52,8 @@ public class PowerClassicProjectile extends Power{
 		}
 		//
 	}
+	
+	public String toString() {
+		return "Heavy Blaster";
+	}
 }

@@ -211,4 +211,8 @@ public class Power extends StardustEntity{
 	public void onDeath() {
 		game.$currentState().addEntity(new RadarBlip(game,x,y));
 	}
+	
+	public String toString() {
+		return "Missile";
+	}
 }

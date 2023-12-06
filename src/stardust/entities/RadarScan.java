@@ -1,11 +1,10 @@
 package stardust.entities;
 
+import org.lwjgl.opengl.GL11;
+
 import engine.Vector;
 import engine.entities.Entity;
 import engine.gfx.Camera;
-
-import org.lwjgl.opengl.GL11;
-
 import stardust.StardustGame;
 
 public class RadarScan extends StardustEntity{
@@ -19,7 +18,7 @@ public class RadarScan extends StardustEntity{
 		setXY(x,y);
 		lt=0;
 		t=0;
-		range=1200;//StardustGame.BOUNDS;
+		range=640;//StardustGame.BOUNDS;
 		setBoundRadius(0);
 	}
 	
@@ -63,17 +62,34 @@ public class RadarScan extends StardustEntity{
 	}
 
 	public void render(Camera c) {
+		// disable render lines
+		///*
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glPushMatrix();
 		GL11.glTranslatef(c.$cx(x), c.$cy(y), 0);
 		GL11.glRotatef((float)Math.toDegrees(t), 0, 0, 1);
-		GL11.glBegin(GL11.GL_LINES);
-		setActualRadarColor(0.35);
-		GL11.glVertex2d(0, 0);
-		GL11.glVertex2d(0, range*c.$zoom());
-		GL11.glEnd();
+		
+		// separate radar line into segments,
+		// segments closer to origin is less visible
+		double seg=32.0;
+		double a=0.5;
+		double l=range*c.$zoom()/seg;
+		for(int i=0;i<seg;i++) {
+			double aa=a*(i/seg);
+			if(aa>0.25) {
+				aa=0.25;
+			}
+			double y1=i*l;
+			double y2=(i+1)*l;
+			setActualRadarColor(aa);
+			GL11.glBegin(GL11.GL_LINES);
+			GL11.glVertex2d(0, y1);
+			GL11.glVertex2d(0, y2);
+			GL11.glEnd();
+		}
 		GL11.glPopMatrix();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		//*/
 	}
 
 	public boolean isCollidable(){
